@@ -18,7 +18,6 @@ const PlayerList = ({ players }) => {
           height: '100%',
           overflow: 'auto',
         }}
-        defaultItemHeight={22}
         itemContent={(index, player) => (
           <PlayerComponent id={player.serverId} data={player} />
         )}
