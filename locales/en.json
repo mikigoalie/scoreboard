@@ -4,5 +4,6 @@
     "ui_tab_players": "Players",
     "ui_tab_players_disconnected": "Disconnected players",
     "ui_tab_societies": "Societies",
-    "ui_tab_filter": "Filter by name or server id"
+    "ui_tab_filter_players": "Filter by name or server id",
+    "ui_tab_filter_societies": "Filter by company's name or it's initials"
 }

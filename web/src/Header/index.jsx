@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Box, TextInput, Input, SegmentedControl } from '@mantine/core';
 import { fetchNui } from '../utils/fetchNui';
 import { SearchIcon } from '../utils/icons';
@@ -7,10 +7,11 @@ const Header = ({ filterDisabled, filter, setFilter, tab, setTab, locale = {
   ui_tab_players: "Players",
   ui_tab_players_disconnected: "Disconnected players",
   ui_tab_societies: "Societies",
-  ui_tab_filter: 'Filter by name or server id'
+  ui_tab_filter_players: 'Filter by name or server id',
+  ui_tab_filter_societies: 'Filter by company\'s name or it\'s initials',
 } }) => {
   const onFocus = useCallback(focused => fetchNui('scoreboard:focus', focused), []);
-
+  const filterPlaceholder = useMemo(() =>tab === 'tab_players' ? locale.ui_tab_filter_players : locale.ui_tab_filter_societies, [tab, locale.ui_tab_filter_players, locale.ui_tab_filter_societies]);
   return (
     <Box p={8}>
       <SegmentedControl value={tab} onChange={setTab} bg="dark.9" data={[
@@ -22,7 +23,7 @@ const Header = ({ filterDisabled, filter, setFilter, tab, setTab, locale = {
         disabled={filterDisabled}
         value={filter}
         onChange={(event) => setFilter(event.target.value)}
-        placeholder={locale.ui_tab_filter}
+        placeholder={filterPlaceholder}
         rightSection={filter !== '' ? <Input.ClearButton disabled={filterDisabled} onClick={() => setFilter('')} /> : <SearchIcon />}
         rightSectionPointerEvents="auto"
         onFocus={() => onFocus(true)}
