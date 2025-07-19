@@ -1,0 +1,202 @@
+[
+    {
+        "price": 45231,
+        "vehicleModel": "stingertt",
+        "category": "sports",
+        "vehicleLabel": "Itali GTO Stinger TT",
+        "maker": "grotti",
+        "makerLabel": "Grotti"
+    },
+    {
+        "price": 78912,
+        "vehicleModel": "caracara2",
+        "category": "off-road",
+        "vehicleLabel": "Caracara 4x4",
+        "maker": "vapid",
+        "makerLabel": "Vapid"
+    },
+    {
+        "price": 23456,
+        "vehicleModel": "tyrus",
+        "category": "super",
+        "vehicleLabel": "Tyrus",
+        "maker": "progen",
+        "makerLabel": "Progen"
+    },
+    {
+        "price": 98765,
+        "vehicleModel": "autarch",
+        "category": "super",
+        "vehicleLabel": "Autarch",
+        "maker": "overflod",
+        "makerLabel": "Overflod"
+    },
+    {
+        "price": 32145,
+        "vehicleModel": "growler",
+        "category": "sports",
+        "vehicleLabel": "Growler",
+        "maker": "pfister",
+        "makerLabel": "Pfister"
+    },
+    {
+        "price": 65432,
+        "vehicleModel": "vagner",
+        "category": "super",
+        "vehicleLabel": "Vagner",
+        "maker": "lampadati",
+        "makerLabel": "Lampadati"
+    },
+    {
+        "price": 12345,
+        "vehicleModel": "dominator3",
+        "category": "muscle",
+        "vehicleLabel": "Dominator GTX",
+        "maker": "vapid",
+        "makerLabel": "Vapid"
+    },
+    {
+        "price": 87654,
+        "vehicleModel": "banshee2",
+        "category": "sports",
+        "vehicleLabel": "Banshee 900R",
+        "maker": "bravado",
+        "makerLabel": "Bravado"
+    },
+    {
+        "price": 54321,
+        "vehicleModel": "rebla",
+        "category": "suv",
+        "vehicleLabel": "Rebla GTS",
+        "maker": "ubermacht",
+        "makerLabel": "Ubermacht"
+    },
+    {
+        "price": 29876,
+        "vehicleModel": "zion3",
+        "category": "sports",
+        "vehicleLabel": "Zion Classic",
+        "maker": "ubermacht",
+        "makerLabel": "Ubermacht"
+    },
+    {
+        "price": 76543,
+        "vehicleModel": "tigon",
+        "category": "super",
+        "vehicleLabel": "Tigon",
+        "maker": "lampadati",
+        "makerLabel": "Lampadati"
+    },
+    {
+        "price": 43210,
+        "vehicleModel": "sandking2",
+        "category": "off-road",
+        "vehicleLabel": "Sandking XL",
+        "maker": "vapid",
+        "makerLabel": "Vapid"
+    },
+    {
+        "price": 67890,
+        "vehicleModel": "jester4",
+        "category": "sports",
+        "vehicleLabel": "Jester RR",
+        "maker": "dinka",
+        "makerLabel": "Dinka"
+    },
+    {
+        "price": 34567,
+        "vehicleModel": "entity2",
+        "category": "super",
+        "vehicleLabel": "Entity XXR",
+        "maker": "overflod",
+        "makerLabel": "Overflod"
+    },
+    {
+        "price": 89012,
+        "vehicleModel": "gauntlet5",
+        "category": "muscle",
+        "vehicleLabel": "Gauntlet Hellfire",
+        "maker": "bravado",
+        "makerLabel": "Bravado"
+    },
+    {
+        "price": 56789,
+        "vehicleModel": "kuruma",
+        "category": "sports",
+        "vehicleLabel": "Kuruma",
+        "maker": "karin",
+        "makerLabel": "Karin"
+    },
+    {
+        "price": 23478,
+        "vehicleModel": "sultan3",
+        "category": "sports",
+        "vehicleLabel": "Sultan RS Classic",
+        "maker": "karin",
+        "makerLabel": "Karin"
+    },
+    {
+        "price": 90123,
+        "vehicleModel": "brawler",
+        "category": "off-road",
+        "vehicleLabel": "Brawler",
+        "maker": "coil",
+        "makerLabel": "Coil"
+    },
+    {
+        "price": 45678,
+        "vehicleModel": "cheetah2",
+        "category": "super",
+        "vehicleLabel": "Cheetah Classic",
+        "maker": "grotti",
+        "makerLabel": "Grotti"
+    },
+    {
+        "price": 78901,
+        "vehicleModel": "buffalo4",
+        "category": "sports",
+        "vehicleLabel": "Buffalo STX",
+        "maker": "bravado",
+        "makerLabel": "Bravado"
+    },
+    {
+        "price": 31245,
+        "vehicleModel": "impaler6",
+        "category": "muscle",
+        "vehicleLabel": "Impaler SZ",
+        "maker": "declasse",
+        "makerLabel": "Declasse"
+    },
+    {
+        "price": 65487,
+        "vehicleModel": "euros",
+        "category": "sports",
+        "vehicleLabel": "Euros",
+        "maker": "annismotors",
+        "makerLabel": "Annis"
+    },
+    {
+        "price": 12389,
+        "vehicleModel": "veto2",
+        "category": "sports",
+        "vehicleLabel": "Veto Modern",
+        "maker": "dinka",
+        "makerLabel": "Dinka"
+    },
+    {
+        "price": 87612,
+        "vehicleModel": "paragon",
+        "category": "sports",
+        "vehicleLabel": "Paragon R",
+        "maker": "enus",
+        "makerLabel": "Enus"
+    },
+    {
+        "price": 54390,
+        "vehicleModel": "vigero2",
+        "category": "muscle",
+        "vehicleLabel": "Vigero ZX",
+        "maker": "declasse",
+        "makerLabel": "Declasse"
+    }
+]

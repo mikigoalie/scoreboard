@@ -1,0 +1,8 @@
+{
+    "ui_footer_serverid": "Tvé server ID",
+    "ui_footer_playercount": "Počet hráčů",
+    "ui_tab_players": "Players",
+    "ui_tab_players_disconnected": "Disconnected players",
+    "ui_tab_societies": "Societies",
+    "ui_tab_filter": "Filter by name or server id"
+}
