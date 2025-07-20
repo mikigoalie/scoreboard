@@ -1,7 +1,8 @@
 lib.locale()
-
+local cachedPlayers = {}
 local activated = false
 local focused = false
+local lastEpoch = 0
 
 
 local scoreboardThread = function()
@@ -45,10 +46,23 @@ end)
 
 RegisterNUICallback('scoreboard:toggled', function(hasOpened, cb)
     LocalPlayer.state:set('scoreboard', hasOpened, false)
-    if (hasOpened) then CreateThread(scoreboardThread) end
-    cb({
-        test = "TESTTT"
-    })
+    if (hasOpened) then 
+        CreateThread(scoreboardThread)
+        local players, epoch = lib.callback.await('scoreboard:getPlayers', false, lastEpoch)
+        if players then
+            for source, player in pairs(players) do
+                if source == tostring(cache.serverId) then
+                    player.localPlayer = true
+                    break
+                end
+            end
+
+            lastEpoch = epoch
+            cachedPlayers = players
+        end
+        return cb({ players = cachedPlayers })
+    end
+    cb({})
 end)
 
 
@@ -59,8 +73,8 @@ RegisterNUICallback('scoreboard:loaded', function(_, cb)
         maxPlayersCount = GetConvarInt('sv_maxclients', 30),
         withOverlay = true,
         drawerProps = {
-            position = "left",
-            offset = 4,
+            position = "right",
+            offset = 12,
             radius = "md"
         }
     })
