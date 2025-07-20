@@ -19,8 +19,6 @@ const App = () => {
   const [players, setPlayers] = useState(mockPlayers);
   const [scoreboardOpened, setScoreboardOpened] = useState(false);
 
-  const ref = useClickOutside(() => scoreboardOpened && setScoreboardOpened(false));
-
   const {
     maxPlayersCount = 0,
     playerServerId = 0,
@@ -49,7 +47,7 @@ const App = () => {
   }, []);
 
   // Randomize ping values every 2 seconds
-  useEffect(() => {
+/*   useEffect(() => {
     const interval = setInterval(() => {
       setPlayers((prev) =>
         prev.map((player) => ({
@@ -60,7 +58,7 @@ const App = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, []); */
 
   const displayedPlayers = useMemo(() => (tab === 'tab_players' ? players : mockDroppedPlayers), [tab, players]);
   const societies = useMemo(() => mockSocieties, []);
@@ -79,6 +77,7 @@ const App = () => {
 
   return (
     <Drawer.Root
+      closeOnClickOutside={false}
       opened={scoreboardOpened}
       onClose={() => setScoreboardOpened(false)}
       keepMounted={false}
@@ -86,11 +85,10 @@ const App = () => {
       {...drawerProps}
     >
       {withOverlay && <Drawer.Overlay props={overlayProps} />}
-      <Drawer.Content miw="400px" ref={ref}>
+      <Drawer.Content miw="400px" >
         <FocusTrap.InitialFocus />
         <Stack gap={0} style={{ height: '100%', overflow: 'hidden' }}>
           <Header
-            filterDisabled={tab === "tab_jobs" || config.filterDisabled || loading}
             filter={filter}
             setFilter={setFilter}
             tab={tab}
