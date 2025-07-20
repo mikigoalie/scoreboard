@@ -5,7 +5,8 @@ game 'gta5'
 node_version '22'
 
 ui_page 'web/dist/index.html'
-shared_scripts { '@ox_lib/init.lua', 'shared.lua' }
+
+shared_scripts { '@ox_lib/init.lua', '@es_extended/imports.lua', 'shared.lua' }
 server_scripts { 'server.lua' }
 client_scripts { 'client.lua'  }
-files { 'web/images/vehicles/*.png', 'web/images/brands/*.webp', 'web/dist/**/*', 'game/modules/**.lua', 'locales/*.json' }
+files { 'web/dist/**/*', 'game/modules/**.lua', 'locales/*.json' }
