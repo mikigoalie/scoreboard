@@ -1,13 +1,11 @@
 local players = {}
 local droppedPlayers = {}
-local epoch = os.time()
+local epoch = 0
 
 
 
 lib.callback.register('scoreboard:getPlayers', function(source, clientEpoch)
     if epoch == clientEpoch then return false end
-
-    print('RETURN PLAYER LIST', clientEpoch, epoch)
     return players, epoch
 end)
 
@@ -17,18 +15,15 @@ AddEventHandler('esx:playerLoaded', function (source, xPlayer)
     players[plySrc] = {
         name = xPlayer.name
     }
-    epoch = os.time()
+    epoch = epoch + 1
 end)
-
---AddEventHandler('esx:playerLogout', function (playerId)
---end)
 
 AddEventHandler("playerJoining", function(src)
     local plySrc = tostring(source)
     players[plySrc] = {
         username = GetPlayerName(src)
     }
-    epoch = os.time()
+    epoch = epoch + 1
 end)
 
 AddEventHandler('playerDropped', function (reason, resourceName, clientDropReason)
@@ -38,7 +33,7 @@ AddEventHandler('playerDropped', function (reason, resourceName, clientDropReaso
     droppedPlayers[plySrc] = players[plySrc]
     droppedPlayers[plySrc].dropped = os.time()
     players[plySrc] = nil
-    epoch = os.time()
+    epoch = epoch + 1
 end)
 
 
@@ -50,9 +45,6 @@ AddEventHandler('onResourceStart', function(resourceName)
             name = xPlayer.name
         }
 
-        if xPlayer.source == 3 then
-            players[tostring(xPlayer.source)] . tags = {{  label = "ma baaaaaaaby", color = "red" }}
-        end
     end
-    epoch = os.time()
+    epoch = epoch + 1
 end)

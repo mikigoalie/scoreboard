@@ -46,7 +46,7 @@ end)
 
 RegisterNUICallback('scoreboard:toggled', function(hasOpened, cb)
     LocalPlayer.state:set('scoreboard', hasOpened, false)
-    if (hasOpened) then 
+    if (hasOpened) then
         CreateThread(scoreboardThread)
         local players, epoch = lib.callback.await('scoreboard:getPlayers', false, lastEpoch)
         if players then
@@ -60,6 +60,7 @@ RegisterNUICallback('scoreboard:toggled', function(hasOpened, cb)
             lastEpoch = epoch
             cachedPlayers = players
         end
+
         return cb({ players = cachedPlayers })
     end
     cb({})
