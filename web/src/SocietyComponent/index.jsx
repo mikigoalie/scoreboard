@@ -1,6 +1,6 @@
 import { Avatar, Group, Badge, Text } from '@mantine/core';
 import { useMemo } from 'react';
-import { UsersIcon } from '../../utils/icons';
+import { UsersIcon } from '../utils/icons';
 
 const playerName = "TEST";
 const playerServerId = 3;

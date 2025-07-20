@@ -1,5 +1,5 @@
 import {  Tooltip } from '@mantine/core'
-import { ConnectIcon, WorldExclamationIcon } from '../../utils/icons'
+import { ConnectIcon, WorldExclamationIcon } from '../utils/icons'
 
 const ConnectionIcon = ({ ping, ...props }) => {
     if (ping < 75) return null;

@@ -1,14 +1,38 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Drawer, Stack, FocusTrap, Divider, Box, LoadingOverlay } from '@mantine/core';
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from 'react';
+import {
+  Drawer,
+  Stack,
+  FocusTrap,
+  Divider,
+  Box,
+  LoadingOverlay,
+} from '@mantine/core';
+
 import { useNuiEvent } from './utils/useNuiEvent';
 import { fetchNui } from './utils/fetchNui';
-import { useClickOutside } from '@mantine/hooks';
-import { mockConfig, mockPlayers, mockDroppedPlayers, mockSocieties } from './utils/misc';
+import {
+  mockConfig,
+  mockPlayers,
+  mockDroppedPlayers,
+  mockSocieties,
+} from './utils/misc';
 
 import Header from './Header';
 import Footer from './Footer';
-import PlayerList from './PlayerList';
-import SocietyList from './SocietyList';
+import List from './List';
+
+const DEFAULT_LOCALE = {
+  ui_tab_players: 'Players',
+  ui_tab_players_disconnected: 'Disconnected players',
+  ui_tab_societies: 'Societies',
+  ui_tab_filter_players: 'Filter by name or server id',
+  ui_tab_filter_societies: "Filter by company’s name or it’s initials",
+};
 
 const App = () => {
   const [loading, setLoading] = useState(false);
@@ -23,48 +47,77 @@ const App = () => {
     playerServerId = 0,
     withOverlay = false,
     overlayProps = {},
-    locale = {},
+    locale = DEFAULT_LOCALE,
     robberies = {},
     drawerProps = {},
-  } = config || {};
+  } = config ?? {};
 
-  useNuiEvent("scoreboard:toggle", (force, players) => {
-    setScoreboardOpened((prev) => (force === undefined ? !prev : !!force))
+
+  const memoizedLocale = useMemo(() => locale, [locale]);
+  const memoizedDrawerProps = useMemo(() => drawerProps, [drawerProps]);
+  const memoizedOverlayProps = useMemo(() => overlayProps, [overlayProps]);
+  const totalPlayerCount = useMemo(() => players.length, [players]);
+
+  const handleToggle = useCallback((force) => {
+    setScoreboardOpened((prev) => (force === undefined ? !prev : !!force));
+  }, []);
+
+  useNuiEvent('scoreboard:toggle', handleToggle);
+
+  useNuiEvent('scoreboard:update', ({ players }) => {
+    if (players) {
+      setPlayers(
+        Object.entries(players).map(([serverId, data]) => ({
+          serverId,
+          ...data,
+        }))
+      );
+    }
   });
-
-  useNuiEvent("scoreboard:update", data => {
-    const { players, societies } = data;
-  });
-
-  const parsePlayers = (rawPlayers) => Object.entries(rawPlayers || {}).map(([serverId, data]) => ({ serverId, ...data }));
 
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened)
-      .then((data) => data?.players && setPlayers(parsePlayers(data.players)));
+      .then((data) => {
+        if (data?.players) {
+          setPlayers(
+            Object.entries(data.players).map(([serverId, data]) => ({
+              serverId,
+              ...data,
+            }))
+          );
+        }
+      })
+      .catch((error) => console.error('Failed to fetch players:', error))
+      .finally(() => setLoading(false));
   }, [scoreboardOpened]);
 
   useEffect(() => {
     fetchNui('scoreboard:loaded', null, mockConfig)
-      .then((config) => {
-        setConfig((prev) => ({ ...prev, ...config }));
-      })
-      .catch(console.error);
+      .then((config) => setConfig(config || {}))
+      .catch((error) => console.error('Failed to load config:', error))
+      .finally(() => setLoading(false));
   }, []);
 
-  const displayedPlayers = useMemo(() => (tab === 'tab_players' ? players : mockDroppedPlayers), [tab, players]);
-  const societies = useMemo(() => mockSocieties, []);
+  const displayedPlayers = useMemo(() => {
+    return tab === 'tab_players' ? players : mockDroppedPlayers;
+  }, [tab, players]);
 
   const CURRENT_PLAYER_LIST = useMemo(() => {
-    return filter
-      ? displayedPlayers.filter((player) =>
-        player.name?.toLowerCase().includes(filter.toLowerCase()) ||
-        player.serverId.toString().includes(filter) ||
-        player.tags.some((tag) => tag.label.toLowerCase().includes(filter.toLowerCase()))
-      )
-      : displayedPlayers;
+    if (!filter) return displayedPlayers;
+    const lowerFilter = filter.toLowerCase();
+    return displayedPlayers.filter(
+      (player) =>
+        player.name?.toLowerCase().includes(lowerFilter) ||
+        player.serverId.toString().includes(lowerFilter) ||
+        player.tags?.some((tag) =>
+          tag.label.toLowerCase().includes(lowerFilter)
+        )
+    );
   }, [filter, displayedPlayers]);
 
-  const playerListCount = useMemo(() => displayedPlayers.length, [displayedPlayers]);
+  const handleTabChange = useCallback((value) => setTab(value), []);
+  const handleFilterChange = useCallback((value) => setFilter(value), []);
+  const handleFilterClear = useCallback(() => setFilter(''), []);
 
   return (
     <Drawer.Root
@@ -73,32 +126,47 @@ const App = () => {
       onClose={() => setScoreboardOpened(false)}
       keepMounted={false}
       size="25%"
-      {...drawerProps}
+      {...memoizedDrawerProps}
     >
-      {withOverlay && <Drawer.Overlay props={overlayProps} />}
-      <Drawer.Content miw="400px" >
+      {withOverlay && <Drawer.Overlay {...memoizedOverlayProps} />}
+      <Drawer.Content miw="400px">
         <FocusTrap.InitialFocus />
-        <Stack gap={0} style={{ height: '100%', overflow: 'hidden' }}>
+        <Stack style={{ height: '100%', overflow: 'hidden' }} gap={0}>
           <Header
+            filterDisabled={loading}
             filter={filter}
-            setFilter={setFilter}
+            onFilterChange={handleFilterChange}
+            onFilterClear={handleFilterClear}
             tab={tab}
-            setTab={setTab}
-            locale={locale}
+            onTabChange={handleTabChange}
+            locale={memoizedLocale}
           />
           <Divider mb="auto" />
-          <Box flex={1} bg="dark.9" pos="relative" h="100%" p={2} pr={0} pb={0}>
-            <LoadingOverlay visible={loading} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
-            {tab === 'tab_jobs'
-              ? <SocietyList societies={societies} />
-              : <PlayerList players={CURRENT_PLAYER_LIST} filter={filter} />}
+          <Box
+            style={{
+              flex: 1,
+              backgroundColor: 'var(--mantine-color-dark-9)',
+              position: 'relative',
+              height: '100%',
+              padding: '2px',
+              paddingRight: 0,
+              paddingBottom: 0,
+            }}
+          >
+            <List
+              tab={tab}
+              players={CURRENT_PLAYER_LIST}
+              societies={mockSocieties}
+              loading={loading}
+              filter={filter}
+            />
           </Box>
           <Divider mt="auto" />
           <Footer
             playerServerId={playerServerId}
-            playerListCount={playerListCount}
+            playerListCount={totalPlayerCount}
             maxPlayersCount={maxPlayersCount}
-            locale={locale}
+            locale={memoizedLocale}
             robberies={robberies}
           />
         </Stack>

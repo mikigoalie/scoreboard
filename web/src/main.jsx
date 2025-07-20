@@ -36,7 +36,7 @@ const theme = createTheme({
     const defaultResolvedColors = defaultVariantColorsResolver(input);
     return defaultResolvedColors;
   },
-  primaryColor: "green",
+  primaryColor: "blue",
   //focusRing: "never",
   colors: { 
     //dark: ["#c9c9c9", "#b3b3b3", "#9b9ba1", "#7f7f87", "#62626c", "#4a4a53", "#383843", "#2a2a34", "#1a1a22", "#0f0f14"] 

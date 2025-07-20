@@ -1,4 +1,4 @@
-import { Group, Badge, Text, Box, Loader } from '@mantine/core';
+import { Group, Badge, Text, Box, Loader, alpha } from '@mantine/core';
 import { useMemo } from 'react';
 import ConnectionIcon from './ConnectionIcon';
 
@@ -14,35 +14,35 @@ const PlayerComponent = ({ id, data }) => {
 		[tags]
 	);
 
-	const backgroundColor = useMemo(() => localPlayer ? 'var(--mantine-primary-color-light-hover)' : 'dark.6', [localPlayer]);
 	const playerLoading = !name
+	const backgroundColor = useMemo(() => localPlayer ? 'var(--mantine-primary-color-light-hover)' : playerLoading ? "dark.9" : 'dark.6', [localPlayer]);
+
 
 	return (
-		<Group bg={backgroundColor} pr={2} wrap="nowrap" align="center" w="100%" gap={6}>
+		<Group bg={backgroundColor} pr={2} wrap="nowrap" align="center" w="100%" gap={10}>
 			<Badge
 				miw={48}
 				maw={128}
-				h="2vw"
-				w="3vw"
+				h="2.3rem"
+				w="3.5rem"
 				mih={32}
 				p={2}
 				m={0}
 				radius="xs"
-				variant="filled"
-				color={playerLoading ? "var(--mantine-primary-color-light-hover)":  "var(--mantine-primary-color-light)"}
+				variant="light"
 			>
-				<Text truncate="end" wrap="nowrap" c="var(--mantine-primary-color-light-color)">
+				<Text truncate="end" wrap="nowrap" >
 					{String(id)}
 				</Text>
 			</Badge>
 
 
 			<Box style={{ flex: 1, minWidth: 0, whiteSpace: 'nowrap', display: "flex", flexDirection: "row", alignItems: "center", gap: 8 }}>
-				<Text truncate="end" wrap="nowrap" whiteSpace="nowrap" c={playerLoading ? "dimmed" : undefined}>{playerLoading ? username : name}</Text>
+				<Text truncate="end" wrap="nowrap" whiteSpace="nowrap" c={playerLoading ? "dimmed" : localPlayer ? 'var(--mantine-primary-color-light-color)' : undefined}>{playerLoading ? username : name}</Text>
 			</Box>
 
 			<Box ml="auto" style={{ maxWidth: 'auto', display: "flex", flexDirection: "row", gap: 8 }}>
-				{playerLoading ? <Loader mr="xs" size="xs" type="dots"/> : <Group wrap="wrap" justify="flex-end" gap={2} pr={2}>
+				{playerLoading ? <Loader mr="xs" size="xs" type="dots" /> : <Group wrap="wrap" justify="flex-end" gap={2} pr={2}>
 					{playerTags}
 				</Group>
 				}
