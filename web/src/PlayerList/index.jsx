@@ -1,25 +1,31 @@
-import { use, useMemo } from 'react';
-import { Box, Center, Divider, Text } from '@mantine/core';
+import { useMemo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import EmptyState from './EmptyState';
-import PlayerListC from './PlayerList';
-
+import PlayerComponent from './PlayerComponent';
 
 const PlayerList = ({ players = [], filter }) => {
-  const renderBody = useMemo(() => {
-    if (!players || players.length === 0) {
-      return <EmptyState filter={filter} />;
-    } else {
-      return <PlayerListC players={players} />;
-    }
-  }, [players, filter]);
+  if (!players.length) {
+    return <EmptyState filter={filter} />;
+  }
 
   return (
-    <>
-     {renderBody}
-    </>
-       
+    <Virtuoso
+      data={players}
+      style={{ flex: 1, height: '100%', overflow: 'auto' }}
+      initialItemCount={players.length > 15 ? 15 : players.length} // Couldn't find a better way to prevent flickering on initial render.
+      itemContent={(index, player) => (
+        <PlayerComponent key={player.serverId} id={player.serverId} data={player} />
+      )}
+      components={{
+        Item: ({ children, ...props }) => (
+          <div {...props} style={{ paddingBottom: 2 }}>
+            {children}
+          </div>
+        ),
+      }}
+    />
   );
 };
+
 
 export default PlayerList;

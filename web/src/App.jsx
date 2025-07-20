@@ -6,7 +6,6 @@ import { useClickOutside } from '@mantine/hooks';
 import { mockConfig, mockPlayers, mockDroppedPlayers, mockSocieties } from './utils/misc';
 
 import Header from './Header';
-import Body from './Body';
 import Footer from './Footer';
 import PlayerList from './PlayerList';
 import SocietyList from './SocietyList';
@@ -29,13 +28,19 @@ const App = () => {
     drawerProps = {},
   } = config || {};
 
-  useNuiEvent("scoreboard:toggle", (force) =>
+  useNuiEvent("scoreboard:toggle", (force, players) => {
     setScoreboardOpened((prev) => (force === undefined ? !prev : !!force))
-  );
+  });
+
+  useNuiEvent("scoreboard:update", data => {
+    const { players, societies } = data;
+  });
+
+  const parsePlayers = (rawPlayers) => Object.entries(rawPlayers || {}).map(([serverId, data]) => ({ serverId, ...data }));
 
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened)
-      .then((data) => console.log('DATA ON TOGGLE', JSON.stringify(data, null, 2)));
+      .then((data) => data?.players && setPlayers(parsePlayers(data.players)));
   }, [scoreboardOpened]);
 
   useEffect(() => {
@@ -46,30 +51,16 @@ const App = () => {
       .catch(console.error);
   }, []);
 
-  // Randomize ping values every 2 seconds
-/*   useEffect(() => {
-    const interval = setInterval(() => {
-      setPlayers((prev) =>
-        prev.map((player) => ({
-          ...player,
-          ping: Math.floor(Math.random() * 200) + 1, // ping from 1 to 100
-        }))
-      );
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []); */
-
   const displayedPlayers = useMemo(() => (tab === 'tab_players' ? players : mockDroppedPlayers), [tab, players]);
   const societies = useMemo(() => mockSocieties, []);
 
   const CURRENT_PLAYER_LIST = useMemo(() => {
     return filter
       ? displayedPlayers.filter((player) =>
-          player.name.toLowerCase().includes(filter.toLowerCase()) ||
-          player.serverId.toString().includes(filter) ||
-          player.tags.some((tag) => tag.label.toLowerCase().includes(filter.toLowerCase()))
-        )
+        player.name?.toLowerCase().includes(filter.toLowerCase()) ||
+        player.serverId.toString().includes(filter) ||
+        player.tags.some((tag) => tag.label.toLowerCase().includes(filter.toLowerCase()))
+      )
       : displayedPlayers;
   }, [filter, displayedPlayers]);
 

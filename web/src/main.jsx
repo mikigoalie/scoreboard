@@ -36,8 +36,12 @@ const theme = createTheme({
     const defaultResolvedColors = defaultVariantColorsResolver(input);
     return defaultResolvedColors;
   },
+  primaryColor: "green",
   //focusRing: "never",
-  //colors: { dark: ["#c9c9c9", "#b3b3b3", "#9b9ba1", "#7f7f87", "#62626c", "#4a4a53", "#383843", "#2a2a34", "#1a1a22", "#0f0f14"] },
+  colors: { 
+    //dark: ["#c9c9c9", "#b3b3b3", "#9b9ba1", "#7f7f87", "#62626c", "#4a4a53", "#383843", "#2a2a34", "#1a1a22", "#0f0f14"] 
+    dark: ["#C1C2C5", "#A6A7AB", "#909296", "#5C5F66", "#373A40", "#2C2E33", "#25262B", "#1A1B1E", "#141517", "#101113"]
+  },
   components: {
     ActionIcon: ActionIcon.extend({
       styles: {

@@ -20,7 +20,8 @@ export const mockConfig = {
     ui_tab_players: "Players",
     ui_tab_players_disconnected: "Disconnected players",
     ui_tab_societies: "Societies",
-    ui_tab_filter: 'Filter by name or server id'
+    ui_tab_filter_players: 'Filter by name or server id',
+    ui_tab_filter_societies: 'Filter by company\'s name or it\'s initials',
   },
   drawerProps: {
     position: 'left',
@@ -45,7 +46,7 @@ const namePool = [
   "Levi Bell", "Violet Morrison", "Christian Johnston", "Claire Bishop", "Grayson Lane",
   "Penelope Pierce", "Sebastian Armstrong", "Aurora Boyd", "Miles Steele", "Naomi West"
 ];
-const tagsPool = ["admin", "vip", "moderator", "egirl"]
+const tagsPool = ["admin", "vip", "moderator", "friend"]
 const colorsPool = ["red", "green", "#00baff", "yellow", "orange", "blue"];
 function getRandomName() {
   const index = Math.floor(Math.random() * namePool.length);
@@ -54,11 +55,12 @@ function getRandomName() {
 
 export const mockPlayers = Array.from({ length: 1328 }, (_, i) => ({
   serverId: i + 1,
-  name: getRandomName(),
+  name: i % 2 === 0 ? getRandomName() : null,
+  username: getRandomName(),
   ping: Math.floor(Math.random() * 200),
   tags: Array.from({ length: Math.floor(Math.random() * 4) }, (_, j) => ({
     label: tagsPool[Math.floor(Math.random() * tagsPool.length)],
-    color: colorsPool[Math.floor(Math.random() * colorsPool.length)],
+    //color: colorsPool[Math.floor(Math.random() * colorsPool.length)],
   })),
   ...(i === Math.floor(Math.random() * 163) ? { localPlayer: true } : {})
 }));
