@@ -75,31 +75,3 @@ RegisterNetEvent('scoreboard:toggled', function(isOpened)
     local plySrc = tostring(source)
     syncQueue[plySrc] = isOpened and true or nil
 end)
-
-
-local function benchmark(name, callback)
-    local startTime = os.nanotime()
-    for i = 1, 1 do
-        callback()
-    end
-    local endTime = os.nanotime()
-    local diff = endTime - startTime
-    print(name .. ' Difference: ' .. diff)
-end
-
-CreateThread(function()
-    local joaat = joaat
-    local GetHashKey = GetHashKey
-
-    benchmark("JOOAT", function()
-        local temp = joaat('adder')
-    end)
-
-    benchmark("Backticks", function()
-        local temp = `adder`
-    end)
-
-    benchmark("GetHashKey", function()
-        local temp = GetHashKey('adder')
-    end)
-end)
