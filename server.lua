@@ -1,50 +1,72 @@
-local players = {}
-local droppedPlayers = {}
+---@diagnostic disable: undefined-field
+local playerController = require 'modules.players'
+local groupController = require 'modules.groups'
+local syncQueue = {}
 local epoch = 0
 
-
-
-lib.callback.register('scoreboard:getPlayers', function(source, clientEpoch)
-    if epoch == clientEpoch then return false end
-    return players, epoch
-end)
-
-AddEventHandler('esx:playerLoaded', function (source, xPlayer)
-    local src = source
-    local plySrc = tostring(src)
-    players[plySrc] = {
-        name = xPlayer.name
-    }
+local onUpdate = function()
     epoch = epoch + 1
-end)
-
-AddEventHandler("playerJoining", function(src)
-    local plySrc = tostring(source)
-    players[plySrc] = {
-        username = GetPlayerName(src)
-    }
-    epoch = epoch + 1
-end)
-
-AddEventHandler('playerDropped', function (reason, resourceName, clientDropReason)
-    local src = source
-    local plySrc = tostring(src)
-    if not players[plySrc] then return end
-    droppedPlayers[plySrc] = players[plySrc]
-    droppedPlayers[plySrc].dropped = os.time()
-    players[plySrc] = nil
-    epoch = epoch + 1
-end)
-
-
-AddEventHandler('onResourceStart', function(resourceName)
-    local xPlayers = ESX.GetExtendedPlayers()
-
-    for i, xPlayer in ipairs(xPlayers) do
-        players[tostring(xPlayer.source)] = {
-            name = xPlayer.name
-        }
-
+    for playerServerId in pairs(syncQueue) do
+        TriggerClientEvent('scoreboard:sync', tonumber(playerServerId), epoch, {
+            players = playerController.getPlayerList(),
+            droppedPlayers = playerController.getDroppedPlayerList(),
+            groups = groupController.getGroupList()
+        })
     end
-    epoch = epoch + 1
+end
+
+
+lib.callback.register('scoreboard:getData', function(source, clientEpoch)
+    if epoch == clientEpoch then
+        return false
+    end
+
+    return true, epoch, {
+        players = playerController.getPlayerList(), 
+        droppedPlayers = playerController.getDroppedPlayerList(), 
+        groups = groupController.getGroupList()
+    }
+end)
+
+AddEventHandler('esx:playerLoaded', function(source, xPlayer)
+    local source = source
+    playerController.addPlayer(source, xPlayer)
+    onUpdate()
+end)
+
+AddEventHandler("playerJoining", function()
+    local source = source
+    playerController.addPlayer(source)
+    onUpdate()
+end)
+
+AddEventHandler('playerDropped', function(reason, resourceName, clientDropReason)
+    local source = source
+    playerController.removePlayer(source)
+    onUpdate()
+end)
+
+local currentResource = GetCurrentResourceName()
+AddEventHandler('onResourceStart', function(resourceName)
+    if currentResource ~= resourceName then return end
+    local xPlayers = ESX.GetExtendedPlayers()
+    for _, xPlayer in pairs(xPlayers) do
+        playerController.addPlayer(xPlayer.source, xPlayer)
+    end
+
+    onUpdate()
+end)
+
+
+AddEventHandler('esx:setJob', function(source, job, lastJob)
+    groupController.decrementGroup(lastJob.name)
+    groupController.incrementGroup(job.name)
+    onUpdate()
+end)
+
+
+RegisterNetEvent('scoreboard:toggled', function(isOpened)
+    local source = source
+    local plySrc = tostring(source)
+    syncQueue[plySrc] = isOpened and true or nil
 end)

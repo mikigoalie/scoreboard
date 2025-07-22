@@ -1,5 +1,5 @@
 lib.locale()
-local cachedPlayers = {}
+local cachedData = {}
 local activated = false
 local focused = false
 local lastEpoch = 0
@@ -8,6 +8,7 @@ local lastEpoch = 0
 local scoreboardThread = function()
     SetNuiFocus(true, true)
     SetNuiFocusKeepInput(true)
+    TriggerServerEvent('scoreboard:toggled', true)
     while activated do
         HudWeaponWheelIgnoreSelection()
         DisablePlayerFiring(cache.playerId, true)
@@ -16,7 +17,7 @@ local scoreboardThread = function()
         DisableControlAction(0, 200, true)
         Wait(0)
     end
-
+    TriggerServerEvent('scoreboard:toggled', false)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
 end
@@ -26,7 +27,15 @@ local keybind = lib.addKeybind({
     description = 'Press TAB to open scoreboard',
     defaultKey = 'TAB',
     onPressed = function(self)
-        SendNUIMessage({ action = "scoreboard:toggle" })
+        if activated then return SendNUIMessage({ action = "scoreboard:hide" }) end
+        local requireSync, epoch, data = lib.callback.await('scoreboard:getData', 500, lastEpoch)
+        if not requireSync then
+            return SendNUIMessage({ action = "scoreboard:display" })
+        end
+
+        lastEpoch = epoch
+        cachedData = data
+        SendNUIMessage({ action = "scoreboard:display", data = cachedData})
     end
 })
 
@@ -48,21 +57,8 @@ RegisterNUICallback('scoreboard:toggled', function(hasOpened, cb)
     LocalPlayer.state:set('scoreboard', hasOpened, false)
     if (hasOpened) then
         CreateThread(scoreboardThread)
-        local players, epoch = lib.callback.await('scoreboard:getPlayers', false, lastEpoch)
-        if players then
-            for source, player in pairs(players) do
-                if source == tostring(cache.serverId) then
-                    player.localPlayer = true
-                    break
-                end
-            end
-
-            lastEpoch = epoch
-            cachedPlayers = players
-        end
-
-        return cb({ players = cachedPlayers })
     end
+
     cb({})
 end)
 
@@ -94,4 +90,12 @@ end)
 local currentRs = GetCurrentResourceName()
 AddEventHandler('onResourceStop', function(rs)
     if (rs ~= currentRs) then return end
+end)
+
+
+RegisterNetEvent('scoreboard:sync', function(epoch, data)
+    cachedData = data
+    lastEpoch = epoch
+
+    SendNUIMessage({ action = "scoreboard:update", data = cachedData})
 end)

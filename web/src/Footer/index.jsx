@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Box, Badge, Group, Tooltip, Divider } from '@mantine/core';
 import { UserIcon, UsersIcon } from '../utils/icons';
 
@@ -9,11 +10,10 @@ function Footer({
         ui_footer_serverid: 'Server ID',
         ui_footer_playercount: 'Players online',
     },
-    robberies = {}
 }) {
     return (
         <>
-
+    <Divider mt="auto" />
             <Box p={16} w="100%" >
                 <Box >
                     <Group justify="center">
@@ -26,17 +26,7 @@ function Footer({
                             </Badge>
                         </Tooltip>
                     </Group>
-                </Box>
-
-
-                {Object.keys(robberies).length > 0 && <Box w="100%" pt={8}>
-                    <Group justify="center">
-                        {Object.entries(robberies).map(([type, enabled]) => (
-                            <Badge key={type} variant="light" color={enabled ? 'green' : 'red'}>{type}</Badge>
-                        ))}
-                    </Group>
-                </Box>}
-                
+                </Box>                
             </Box>
         </>
 
@@ -44,4 +34,4 @@ function Footer({
     );
 }
 
-export default Footer;
+export default memo(Footer);

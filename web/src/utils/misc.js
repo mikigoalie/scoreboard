@@ -53,7 +53,7 @@ function getRandomName() {
   return namePool[index];
 }
 
-export const mockPlayers = Array.from({ length: 1328 }, (_, i) => ({
+export const mockPlayers = Array.from({ length: 150 }, (_, i) => ({
   serverId: i + 1,
   name: i % 2 === 0 ? getRandomName() : null,
   username: getRandomName(),
