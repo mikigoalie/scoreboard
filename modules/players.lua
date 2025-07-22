@@ -2,39 +2,18 @@ local groupController = require 'modules.groups'
 local players = {}
 local droppedPlayers = {}
 
-local function addPlayer(source, xPlayer)
+local function addPlayer(source, data)
     local src = source
-    if not src then
-        return
-    end
-
-    local plySrc = tostring(src)
-    players[plySrc] = {}
-
+    if not src then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
+    players[plySrc] = data
     players[plySrc].serverId = src
-    if xPlayer then
-        groupController.incrementGroup(xPlayer.job.name)
-        players[plySrc].name = xPlayer.name
-        players[plySrc].tags = lib.array:new()
-        players[plySrc].group = xPlayer.job.name
-        if xPlayer.admin then
-            lib.array.push(players[plySrc].tags, {
-                label = "admin"
-            })
-        end
-    else
-        players[plySrc].username = GetPlayerName(src)
-    end
 end
 
-local function removePlayer(source, xPlayer)
+local function removePlayer(source)
     local src = source
-    if not src then
-        return
-    end
-
-    local plySrc = tostring(src)
-    if not players[plySrc] then return end
+    if not src then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
 
     if players[plySrc].group then
         groupController.decrementGroup(players[plySrc].group)
@@ -52,25 +31,26 @@ end
 
 local function decrementPlayerGroup(source)
     local src = source
-    if not src then
-        return
-    end
-
-    local plySrc = tostring(src)
+    if not src then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
     if not players[plySrc] or not players[plySrc].group then return end
-
     groupController.decrementGroup(players[plySrc].group)
 end
 
 local function incrementPlayerGroup(source)
     local src = source
-    if not src then
-        return
-    end
-
-    local plySrc = tostring(src)
+    if not src then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
     if not players[plySrc] or not players[plySrc].group then return end
     groupController.incrementGroup(players[plySrc].group)
+end
+
+local function getPlayerPreviousGroup(source)
+    local src = source
+    if not src then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
+    if not players[plySrc] or not players[plySrc].group then return false end
+    return players[plySrc].group
 end
 
 local function getDroppedPlayerList()
@@ -83,6 +63,6 @@ return {
     decrementPlayerGroup = decrementPlayerGroup,
     removePlayer = removePlayer,
     getPlayerList = getPlayerList,
-    getDroppedPlayerList =
-        getDroppedPlayerList
+    getDroppedPlayerList = getDroppedPlayerList,
+    getPlayerPreviousGroup = getPlayerPreviousGroup,
 }

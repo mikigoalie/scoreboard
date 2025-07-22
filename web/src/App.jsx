@@ -86,6 +86,15 @@ const App = () => {
     setDroppedPlayers(new Map(Object.entries(droppedPlayers)));
   });
 
+    useNuiEvent('scoreboard:updatecfg', (data) => {
+      setConfig({
+        ...config,
+        ...data
+      })
+  });
+
+
+
 
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened)

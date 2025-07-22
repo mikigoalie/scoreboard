@@ -6,7 +6,7 @@ node_version '22'
 
 ui_page 'web/dist/index.html'
 
-shared_scripts { '@ox_lib/init.lua', '@es_extended/imports.lua', 'shared.lua' }
+shared_scripts { '@ox_lib/init.lua' }
 server_scripts { 'server.lua' }
 client_scripts { 'client.lua'  }
 files { 'web/dist/**/*', 'locales/*.json' }

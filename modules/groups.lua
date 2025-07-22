@@ -1,6 +1,5 @@
 local groups = require 'config'.societies
 
-
 local function incrementGroup(group)
     if not group then return end
 

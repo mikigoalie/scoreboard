@@ -29,11 +29,17 @@ local keybind = lib.addKeybind({
     onPressed = function(self)
         if activated then return SendNUIMessage({ action = "scoreboard:hide" }) end
         local requireSync, epoch, data = lib.callback.await('scoreboard:getData', 500, lastEpoch)
+
+
         if not requireSync then
             return SendNUIMessage({ action = "scoreboard:display" })
         end
 
         lastEpoch = epoch
+        if data.players then
+            data.players?[tostring(cache.serverId)].localPlayer = true
+        end
+
         cachedData = data
         SendNUIMessage({ action = "scoreboard:display", data = cachedData})
     end
@@ -79,7 +85,10 @@ end)
 
 
 AddEventHandler('ox_lib:setLocale', function()
-    print(json.encode(lib.getLocales()))
+    local locales = lib.getLocales()
+    SendNUIMessage({ action = "scoreboard:updatecfg", data = {
+        locale = locales
+    }})
 end)
 
 AddStateBagChangeHandler("scoreboard", ('player:%s'):format(cache.serverId), function(bagName, key, value)
@@ -95,7 +104,10 @@ end)
 
 RegisterNetEvent('scoreboard:sync', function(epoch, data)
     cachedData = data
+    if cachedData.players then
+        cachedData.players?[tostring(cache.serverId)].localPlayer = true
+    end
     lastEpoch = epoch
-
     SendNUIMessage({ action = "scoreboard:update", data = cachedData})
 end)
+
