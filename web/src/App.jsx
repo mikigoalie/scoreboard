@@ -17,7 +17,7 @@ import { mockConfig } from './utils/misc';
 import Header from './Header';
 import Footer from './Footer';
 import Playerlist from './Lists/Playerlist';
-import Societylist from './Lists/Societylist';
+import GroupList from './Lists/GroupList';
 import DisconnectedPlayerlist from './Lists/DisconnectedPlayerlist';
 
 const DEFAULT_LOCALE = {
@@ -137,8 +137,8 @@ const App = () => {
             <LoadingOverlay visible={loading} />
 
             {tab == "tab_players" && <Playerlist filter={filter} data={players} />}
-{/*             {tab == "tab_droppedplayers" && <Playerlist filter={filter} data={players} />}
-            {tab == "tab_jobs" && <Playerlist filter={filter} data={players} />} */}
+            {/* TBD {tab == "tab_droppedplayers" && <Playerlist filter={filter} data={players} />} */}
+            {tab == "tab_jobs" && <GroupList filter={filter} data={groups} />}
 
           </Box>
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { emulateGameEvent } from "../utils/misc";
 import { Paper, Text, Group, Button, Kbd, Stack } from "@mantine/core";
-import { mockPlayers } from "../utils/misc";
+import { mockPlayers, mockGroups } from "../utils/misc";
 
 const Dev = () => {
   const [opened, setOpened] = useState(false);
@@ -30,11 +30,12 @@ const Dev = () => {
   >
     {opened ? <Group>
       <Button variant="default" onClick={() => emulateGameEvent({
-        action: "scoreboard:update", data: {
-          players: mockPlayers
-        }
+        action: "scoreboard:update", data: { players: mockPlayers }
       })}>Add players</Button>
-      <Button variant="default">Add groups</Button>
+
+            <Button variant="default" onClick={() => emulateGameEvent({
+        action: "scoreboard:update", data: { groups: mockGroups }
+      })}>Add groups</Button>
       <Button variant="default" onClick={() => emulateGameEvent({ action: "scoreboard:update", data: { forceClear: true} })}>Clear data</Button>
     </Group> : <Stack>
 

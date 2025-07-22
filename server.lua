@@ -7,7 +7,9 @@ local epoch = 0
 local onUpdate = function()
     epoch = epoch + 1
     for playerServerId in pairs(syncQueue) do
-        TriggerClientEvent('scoreboard:sync', tonumber(playerServerId), epoch, {
+        local playerId = assert(tonumber(playerServerId))
+
+        TriggerClientEvent('scoreboard:sync', playerId, epoch, {
             players = playerController.getPlayerList(),
             droppedPlayers = playerController.getDroppedPlayerList(),
             groups = groupController.getGroupList()
@@ -20,7 +22,6 @@ lib.callback.register('scoreboard:getData', function(source, clientEpoch)
     if epoch == clientEpoch then
         return false
     end
-
     return true, epoch, {
         players = playerController.getPlayerList(), 
         droppedPlayers = playerController.getDroppedPlayerList(), 
@@ -32,6 +33,10 @@ AddEventHandler('esx:playerLoaded', function(source, xPlayer)
     local source = source
     playerController.addPlayer(source, xPlayer)
     onUpdate()
+end)
+
+AddEventHandler('esx:playerLogout', function (playerId)
+    playerController.decrementPlayerGroup(playerId)
 end)
 
 AddEventHandler("playerJoining", function()
@@ -69,4 +74,32 @@ RegisterNetEvent('scoreboard:toggled', function(isOpened)
     local source = source
     local plySrc = tostring(source)
     syncQueue[plySrc] = isOpened and true or nil
+end)
+
+
+local function benchmark(name, callback)
+    local startTime = os.nanotime()
+    for i = 1, 1 do
+        callback()
+    end
+    local endTime = os.nanotime()
+    local diff = endTime - startTime
+    print(name .. ' Difference: ' .. diff)
+end
+
+CreateThread(function()
+    local joaat = joaat
+    local GetHashKey = GetHashKey
+
+    benchmark("JOOAT", function()
+        local temp = joaat('adder')
+    end)
+
+    benchmark("Backticks", function()
+        local temp = `adder`
+    end)
+
+    benchmark("GetHashKey", function()
+        local temp = GetHashKey('adder')
+    end)
 end)

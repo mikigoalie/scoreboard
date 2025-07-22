@@ -41,7 +41,7 @@ const Playerlist = ({ filter, data }) => {
             itemContent={(index, item) => (
                 <div style={itemStyles}>
                     <PlayerComponent
-                        key={item.serverId} // Ensure unique key
+                        key={item.serverId}
                         serverId={item.serverId}
                         username={item?.username}
                         name={item?.name}

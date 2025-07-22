@@ -1,7 +1,7 @@
 local config = {
     societies = {
         ["LSPD"] = {
-            groups = { "unemployed" }
+            groups = { "unemployed" },
         }
     }
 }

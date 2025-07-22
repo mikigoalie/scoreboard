@@ -76,9 +76,9 @@ export const mockDroppedPlayers = Array.from({ length: 487 }, (_, i) => ({
 
 
 const societyPool = [
-  "Los Santos Police Department", "LEO Services"
+  "Los Santos Police Department", "LEO Services", "Staff"
 ];
-export const mockSocieties = Array.from({ length: societyPool.length }, (_, i) => ({
+export const mockGroups = Array.from({ length: societyPool.length }, (_, i) => ({
   label: societyPool[i],
   playerCount: i > 0 ? 0 : 5,
 }));

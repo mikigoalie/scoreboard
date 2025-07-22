@@ -9,4 +9,4 @@ ui_page 'web/dist/index.html'
 shared_scripts { '@ox_lib/init.lua', '@es_extended/imports.lua', 'shared.lua' }
 server_scripts { 'server.lua' }
 client_scripts { 'client.lua'  }
-files { 'web/dist/**/*', 'locales/*.json', 'config.lua' }
+files { 'web/dist/**/*', 'locales/*.json' }
