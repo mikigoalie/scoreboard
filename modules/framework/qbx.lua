@@ -20,7 +20,7 @@ AddEventHandler('onResourceStart', function(resourceName)
 end)
 
 RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
-        local source = source
+    local source = source
 
     local xPlayer = qbx:GetPlayer(source)
     if not xPlayer then return end
