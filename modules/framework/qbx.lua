@@ -19,10 +19,12 @@ AddEventHandler('onResourceStart', function(resourceName)
     epoch.onUpdate()
 end)
 
-AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
+        local source = source
+
     local xPlayer = qbx:GetPlayer(source)
     if not xPlayer then return end
-    playerController.addPlayer(playerId, {
+    playerController.addPlayer(source, {
         name = ('%s %s'):format(xPlayer.PlayerData.charinfo.firstname, xPlayer.PlayerData.charinfo.lastname),
         username = xPlayer.PlayerData.name
     })
