@@ -25,11 +25,6 @@ AddEventHandler('onResourceStart', function(resourceName)
             username = GetPlayerName(playerId)
         }
 
-        local xPlayer = Ox.GetPlayer(playerId)
-        print('Dostávám random věc', xPlayer.get('test', 2))
-        xPlayer.set('test', function (param)
-            return param * 2
-        end)
         if xPlayer then
             xData.name = xPlayer.get('name')
             local groups = xPlayer.getGroups()

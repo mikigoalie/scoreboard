@@ -1,14 +1,13 @@
-import {
+import React, {
   useState,
-  useMemo,
+  useReducer,
   useEffect,
-  useCallback,
+  useMemo,
 } from 'react';
 import {
   Drawer,
   Stack,
   Box,
-  LoadingOverlay,
 } from '@mantine/core';
 import { useNuiEvent } from './utils/useNuiEvent';
 import { fetchNui } from './utils/fetchNui';
@@ -33,20 +32,45 @@ const DEFAULT_CONFIG = {
   overlayProps: {},
   locale: DEFAULT_LOCALE,
   drawerProps: {},
+};
+
+const initialState = {
+  players: new Map(),
+  groups: new Map(),
+  droppedPlayers: new Map(),
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'update':
+      return {
+        players: new Map(Object.entries(action.players || {})),
+        groups: new Map(Object.entries(action.groups || {})),
+        droppedPlayers: new Map(Object.entries(action.droppedPlayers || {})),
+      };
+    case 'clear':
+      return initialState;
+    default:
+      return state;
+  }
 }
 
+const containerStyle = {
+  flex: 1,
+  backgroundColor: 'var(--mantine-color-dark-9)',
+  position: 'relative',
+  height: '100%',
+  padding: '2px 0 0 2px',
+};
+
 const App = () => {
-  const [players, setPlayers] = useState(new Map());
-  const [groups, setGroups] = useState(new Map());
-  const [droppedPlayers, setDroppedPlayers] = useState(new Map());
-
-
-  const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { players, groups } = state;
   const [tab, setTab] = useState('tab_players');
   const [filter, setFilter] = useState('');
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
-
+  const [config, setConfig] = useState(() => DEFAULT_CONFIG);
   const [scoreboardOpened, setScoreboardOpened] = useState(false);
+
   const {
     maxPlayersCount,
     playerServerId,
@@ -54,58 +78,76 @@ const App = () => {
     overlayProps,
     locale,
     drawerProps,
-  } = useMemo(() => config, [config]);
+  } = config;
 
   const totalPlayerCount = useMemo(() => players.size, [players]);
 
+  // Filtered players inline helper
+  const filteredPlayers = useMemo(() => {
+    if (!filter) return players;
+    const lowerFilter = filter.toLowerCase();
+    return new Map(
+      [...players].filter(([, player]) =>
+        player.name?.toLowerCase().includes(lowerFilter) ||
+        String(player.serverId)?.includes(lowerFilter)
+      )
+    );
+  }, [players, filter]);
+
+  // Filtered groups inline helper
+  const filteredGroups = useMemo(() => {
+    if (!filter) return groups;
+    const lowerFilter = filter.toLowerCase();
+    return new Map(
+      [...groups].filter(([, group]) =>
+        group.name?.toLowerCase().includes(lowerFilter) ||
+        group.initials?.toLowerCase().includes(lowerFilter)
+      )
+    );
+  }, [groups, filter]);
+
   useNuiEvent('scoreboard:display', (data) => {
-    if (!data) return setScoreboardOpened(true);
+    if (!data) {
+      setScoreboardOpened(true);
+      return;
+    }
     const { players = {}, groups = {}, droppedPlayers = {} } = data;
-    setPlayers(new Map(Object.entries(players)));
-    setGroups(new Map(Object.entries(groups)));
-    setDroppedPlayers(new Map(Object.entries(droppedPlayers)));
+    dispatch({ type: 'update', players, groups, droppedPlayers });
     setScoreboardOpened(true);
   });
 
-  const handleHide = useCallback(() => setScoreboardOpened(false), []);
-  useNuiEvent('scoreboard:hide', handleHide);
+  useNuiEvent('scoreboard:hide', () => setScoreboardOpened(false));
 
   useNuiEvent('scoreboard:update', ({ forceClear = false, players = {}, groups = {}, droppedPlayers = {} }) => {
     if (forceClear) {
-      setPlayers(new Map());
-      setGroups(new Map());
-      setDroppedPlayers(new Map());
+      dispatch({ type: 'clear' });
       return;
     }
-
-    setPlayers(new Map(Object.entries(players)));
-    setGroups(new Map(Object.entries(groups)));
-    setDroppedPlayers(new Map(Object.entries(droppedPlayers)));
+    dispatch({ type: 'update', players, groups, droppedPlayers });
   });
 
   useNuiEvent('scoreboard:updatecfg', (data) => {
-    setConfig((prev) => ({ ...prev, ...data }));
+    setConfig(prev => ({
+      ...prev,
+      ...data,
+      locale: { ...prev.locale, ...data.locale },
+    }));
   });
 
   useEffect(() => {
-    fetchNui('scoreboard:toggled', scoreboardOpened)
+    fetchNui('scoreboard:toggled', scoreboardOpened);
   }, [scoreboardOpened]);
 
-
   useEffect(() => {
-    fetchNui('scoreboard:loaded', null, mockConfig).then((config) => setConfig(config || {}))
+    fetchNui('scoreboard:loaded', null, mockConfig).then(config => setConfig(config || DEFAULT_CONFIG));
   }, []);
 
-  const handleTabChange = useCallback((value) => setTab(value), []);
-  const handleFilterChange = useCallback((value) => setFilter(value), []);
-  const handleFilterClear = useCallback(() => setFilter(''), []);
-  const closeScoreboard = useCallback(() => setScoreboardOpened(false), []);
 
   return (
     <Drawer.Root
       closeOnClickOutside={false}
       opened={scoreboardOpened}
-      onClose={closeScoreboard}
+      onClose={() => setScoreboardOpened(false)}
       keepMounted={false}
       size="25%"
       {...drawerProps}
@@ -115,32 +157,30 @@ const App = () => {
         <Stack style={{ height: '100%', overflow: 'hidden' }} gap={0}>
           <Header
             filter={filter}
-            onFilterChange={handleFilterChange}
-            onFilterClear={handleFilterClear}
+            onFilterChange={setFilter}
+            onFilterClear={() => setFilter('')}
             tab={tab}
-            onTabChange={handleTabChange}
+            onTabChange={setTab}
             locale={locale}
           />
 
-          <Box
-            style={{
-              flex: 1,
-              backgroundColor: 'var(--mantine-color-dark-9)',
-              position: 'relative',
-              height: '100%',
-              padding: '2px',
-              paddingRight: 0,
-              paddingBottom: 0,
-            }}
-          >
-            <LoadingOverlay visible={loading} />
-
+          <Box style={containerStyle}>
             <Box style={{ height: '100%' }}>
-              <Box style={{ display: tab === 'tab_players' ? 'block' : 'none', height: '100%' }}>
-                <Playerlist filter={filter} data={players} />
+              <Box
+                style={{
+                  display: tab === 'tab_players' ? 'block' : 'none',
+                  height: '100%',
+                }}
+              >
+                <Playerlist filter={filter} data={filteredPlayers} />
               </Box>
-              <Box style={{ display: tab === 'tab_jobs' ? 'block' : 'none', height: '100%' }}>
-                <GroupList filter={filter} data={groups} />
+              <Box
+                style={{
+                  display: tab === 'tab_jobs' ? 'block' : 'none',
+                  height: '100%',
+                }}
+              >
+                <GroupList filter={filter} data={filteredGroups} />
               </Box>
             </Box>
           </Box>

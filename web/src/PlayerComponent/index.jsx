@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Group, Badge, Text, Box, Loader } from '@mantine/core';
 
 function getPlayerTags(tags) {
-  if (!tags || !tags.length) return null;
+  if (!Array.isArray(tags) || !tags.length) return null;
 
   return tags.slice(0, 3).map(({ label, variant, radius, color }, index) => (
     <Badge
@@ -20,7 +20,8 @@ function getPlayerTags(tags) {
 const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, ping, data }) => {
   const playerLoading = !name;
 
-  const playerTags = getPlayerTags(tags);
+  const playerTags = useMemo(() => getPlayerTags(tags), [tags]);
+
   const backgroundColor = useMemo(
     () =>
       localPlayer
@@ -86,7 +87,6 @@ const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, pin
       <Box
         ml="auto"
         style={{
-          maxWidth: 'auto',
           display: 'flex',
           flexDirection: 'row',
           gap: 8,

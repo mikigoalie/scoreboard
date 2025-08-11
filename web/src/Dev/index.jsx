@@ -2,16 +2,19 @@ import { useCallback, useEffect, useState } from "react";
 import { emulateGameEvent } from "../utils/misc";
 import { Paper, Text, Group, Button, Kbd, Stack } from "@mantine/core";
 import { mockPlayers, mockGroups } from "../utils/misc";
+import { useWindowEvent } from '@mantine/hooks';
 
 const Dev = () => {
   const [opened, setOpened] = useState(false);
   const handleKeyDown = useCallback(event => {
+    event.preventDefault();
+    
     const target = event.target;
-    const isInput = ['INPUT'].includes(target.tagName) || target.isContentEditable;
+    const isInput = ['INPUT'].includes(target.tagName);
     if (isInput) return;
     if (event.key !== "Tab") return;
     setOpened(!opened);
-    emulateGameEvent({ action: opened ? "scoreboard:hide" : "scoreboard:display"})
+    emulateGameEvent({ action: opened ? "scoreboard:hide" : "scoreboard:display" })
   }, [opened]);
 
   useEffect(() => {
@@ -33,10 +36,10 @@ const Dev = () => {
         action: "scoreboard:update", data: { players: mockPlayers }
       })}>Add players</Button>
 
-            <Button variant="default" onClick={() => emulateGameEvent({
+      <Button variant="default" onClick={() => emulateGameEvent({
         action: "scoreboard:update", data: { groups: mockGroups }
       })}>Add groups</Button>
-      <Button variant="default" onClick={() => emulateGameEvent({ action: "scoreboard:update", data: { forceClear: true} })}>Clear data</Button>
+      <Button variant="default" onClick={() => emulateGameEvent({ action: "scoreboard:update", data: { forceClear: true } })}>Clear data</Button>
     </Group> : <Stack>
 
       <Text>Press <Kbd>TAB</Kbd> to open scoreboard</Text>

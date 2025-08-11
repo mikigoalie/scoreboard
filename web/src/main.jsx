@@ -2,7 +2,7 @@ import "./index.css";
 import "@mantine/core/styles.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { MantineProvider, createTheme, ActionIcon, Input, Select, defaultVariantColorsResolver } from "@mantine/core";;
+import { MantineProvider, createTheme, ActionIcon, Input, Select } from "@mantine/core";;
 import { isEnvBrowser } from "./utils/misc";
 import Dev from "./Dev";
 import App from "./App.jsx";
@@ -15,7 +15,6 @@ if (isBrowser) {
   script.src = '//unpkg.com/react-scan/dist/auto.global.js';
   script.crossOrigin = 'anonymous';
   document.head.appendChild(script);
-
   root.style.height = "100vh";
   root.style.backgroundImage = "url(https://img.gta5-mods.com/q95/images/naturalvision-evolved-night-reshade-preset-by-squander-lobby/3778b5-1.jpg)";
   root.style.backgroundSize = "cover";
@@ -23,23 +22,10 @@ if (isBrowser) {
   root.style.backgroundPosition = "center";
 }
 
-
-
-const resolver = (theme) => ({
-  variables: { "--mantine-color-ofblue": theme.other.ofblue },
-  light: { "--mantine-color-error": theme.colors.red[6] },
-  dark: { "--mantine-color-error": theme.colors.red[5] },
-});
-
 const theme = createTheme({
-  variantColorResolver: (input) => {
-    const defaultResolvedColors = defaultVariantColorsResolver(input);
-    return defaultResolvedColors;
-  },
   primaryColor: "blue",
-  //focusRing: "never",
+  focusRing: "never",
   colors: {
-    //dark: ["#c9c9c9", "#b3b3b3", "#9b9ba1", "#7f7f87", "#62626c", "#4a4a53", "#383843", "#2a2a34", "#1a1a22", "#0f0f14"] 
     dark: ["#C1C2C5", "#A6A7AB", "#909296", "#5C5F66", "#373A40", "#2C2E33", "#25262B", "#1A1B1E", "#141517", "#101113"]
   },
   components: {

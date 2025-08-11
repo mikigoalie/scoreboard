@@ -113,3 +113,19 @@ RegisterNetEvent('scoreboard:sync', function(epoch, data)
     lastEpoch = epoch
     SendNUIMessage({ action = "scoreboard:update", data = cachedData })
 end)
+RegisterCommand('test', function()
+    SendNUIMessage({
+        action = "scoreboard:updatecfg",
+        data = {
+            locale = {
+                ui_footer_serverid = "Tvé TESTTT ID",
+                ui_footer_playercount = "Počet hráčů",
+                ui_tab_players = "Hráči",
+                ui_tab_players_disconnected = "Odpojení hráči",
+                ui_tab_societies = "Společnosti",
+                ui_tab_filter_players = "Filtruj dle jména, id nebo tagu",
+                ui_tab_filter_societies = "Filtruj dle skupiny nebo jejich zkratky"
+            }
+        }
+    })
+end)

@@ -1,4 +1,4 @@
-local module_path = string.format("modules.framework.%s", require 'config'?.framework or "qbx")
+local module_path = string.format("modules.framework.%s", require 'config'?.framework or "standalone")
 local success, framework = pcall(require, module_path)
 if not success then
     return lib.print.error('FRAMEWORK NOT VALID / INSTALLED FRAMEWORK! Check your configuration file.')
