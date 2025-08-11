@@ -1,8 +1,9 @@
 local config = {
-    framework = "qbx",
+    onlyIncludeOnDuty = false,
+    framework = "ox",
     societies = {
         ["LSPD"] = {
-            groups = { "unemployed" },
+            groups = { "ambulance" },
         }
     }
 }

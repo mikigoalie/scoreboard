@@ -1,15 +1,12 @@
 import { memo, useMemo } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import SocietyComponent from '../GroupComponent';
+import EmptyState from './EmptyState';
 
 const virtuosoStyles = {
   flex: 1,
   height: '100%',
   overflow: 'auto',
-};
-
-const itemStyles = {
-  paddingBottom: '2px',
 };
 
 const GroupList = ({ filter, data }) => {
@@ -20,7 +17,9 @@ const GroupList = ({ filter, data }) => {
     }));
   }, [data]);
 
-  console.log(JSON.stringify(societyArray))
+    if (!data.size) {
+        return <EmptyState />;
+    }
 
   return (
     <Virtuoso

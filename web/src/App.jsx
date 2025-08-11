@@ -7,7 +7,6 @@ import {
 import {
   Drawer,
   Stack,
-  Divider,
   Box,
   LoadingOverlay,
 } from '@mantine/core';
@@ -18,7 +17,6 @@ import Header from './Header';
 import Footer from './Footer';
 import Playerlist from './Lists/Playerlist';
 import GroupList from './Lists/GroupList';
-import DisconnectedPlayerlist from './Lists/DisconnectedPlayerlist';
 
 const DEFAULT_LOCALE = {
   ui_tab_players: 'Players',
@@ -72,7 +70,6 @@ const App = () => {
   const handleHide = useCallback(() => setScoreboardOpened(false), []);
   useNuiEvent('scoreboard:hide', handleHide);
 
-  // Handle scoreboard updates
   useNuiEvent('scoreboard:update', ({ forceClear = false, players = {}, groups = {}, droppedPlayers = {} }) => {
     if (forceClear) {
       setPlayers(new Map());
@@ -86,15 +83,9 @@ const App = () => {
     setDroppedPlayers(new Map(Object.entries(droppedPlayers)));
   });
 
-    useNuiEvent('scoreboard:updatecfg', (data) => {
-      setConfig({
-        ...config,
-        ...data
-      })
+  useNuiEvent('scoreboard:updatecfg', (data) => {
+    setConfig((prev) => ({ ...prev, ...data }));
   });
-
-
-
 
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened)
@@ -123,7 +114,6 @@ const App = () => {
       <Drawer.Content miw="400px">
         <Stack style={{ height: '100%', overflow: 'hidden' }} gap={0}>
           <Header
-            filterDisabled={loading}
             filter={filter}
             onFilterChange={handleFilterChange}
             onFilterClear={handleFilterClear}
@@ -145,10 +135,14 @@ const App = () => {
           >
             <LoadingOverlay visible={loading} />
 
-            {tab == "tab_players" && <Playerlist filter={filter} data={players} />}
-            {/* TBD {tab == "tab_droppedplayers" && <Playerlist filter={filter} data={players} />} */}
-            {tab == "tab_jobs" && <GroupList filter={filter} data={groups} />}
-
+            <Box style={{ height: '100%' }}>
+              <Box style={{ display: tab === 'tab_players' ? 'block' : 'none', height: '100%' }}>
+                <Playerlist filter={filter} data={players} />
+              </Box>
+              <Box style={{ display: tab === 'tab_jobs' ? 'block' : 'none', height: '100%' }}>
+                <GroupList filter={filter} data={groups} />
+              </Box>
+            </Box>
           </Box>
 
           <Footer

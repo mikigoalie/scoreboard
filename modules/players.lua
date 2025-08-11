@@ -53,6 +53,14 @@ local function getPlayerPreviousGroup(source)
     return players[plySrc].group
 end
 
+local function setPlayerPreviousGroup(source, group)
+    local src = source
+    if not src or not group then return end
+    local plySrc = type(src) == "string" and src or tostring(src)
+    if not players[plySrc] then return false end
+    players[plySrc].group = group
+end
+
 local function getDroppedPlayerList()
     return droppedPlayers
 end
@@ -65,4 +73,5 @@ return {
     getPlayerList = getPlayerList,
     getDroppedPlayerList = getDroppedPlayerList,
     getPlayerPreviousGroup = getPlayerPreviousGroup,
+    setPlayerPreviousGroup = setPlayerPreviousGroup
 }

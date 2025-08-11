@@ -51,7 +51,6 @@ const Playerlist = ({ filter, data }) => {
                     />
                 </div>
             )}
-            aria-label="List of players"
         />
     );
 };
