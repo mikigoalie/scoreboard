@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { Group, Badge, Text, Box, Loader } from '@mantine/core';
 
 function getPlayerTags(tags) {
   if (!Array.isArray(tags) || !tags.length) return null;
 
-  return tags.slice(0, 3).map(({ label, variant, radius, color }, index) => (
+  return tags.slice(0, 3).map(({ label, ...badgeProps }, index) => (
     <Badge
       key={`tag-${label}-${index}`}
-      variant={variant || 'light'}
-      radius={radius || 'xs'}
-      color={color || undefined}
-      size="xs"
+      variant={'light'}
+      radius={'xs'}
+      size="sm"
+      {...badgeProps}
     >
       {label}
     </Badge>
@@ -19,37 +19,17 @@ function getPlayerTags(tags) {
 
 const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, ping, data }) => {
   const playerLoading = !name;
-
   const playerTags = useMemo(() => getPlayerTags(tags), [tags]);
-
-  const backgroundColor = useMemo(
-    () =>
-      localPlayer
-        ? 'var(--mantine-primary-color-light-hover)'
-        : playerLoading
-          ? 'dark.9'
-          : 'dark.6',
-    [localPlayer, playerLoading]
-  );
 
   return (
     <Group
-      bg={backgroundColor}
-      pr={2}
-      wrap="nowrap"
-      align="center"
-      w="100%"
-      gap={10}
+      className="player item-component"
+      data-player-local={localPlayer}
+      data-player-loading={!name}
     >
       <Badge
-        miw={48}
-        maw={128}
-        h="2.3rem"
-        w="3.5rem"
-        mih={32}
-        p={2}
-        m={0}
-        radius="xs"
+        className="player-badge"
+        radius={0}
         variant="light"
       >
         <Text truncate="end" wrap="nowrap">
@@ -57,21 +37,10 @@ const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, pin
         </Text>
       </Badge>
 
-      <Box
-        style={{
-          flex: 1,
-          minWidth: 0,
-          whiteSpace: 'nowrap',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
+      <Box className="player-name">
         <Text
           truncate="end"
           wrap="nowrap"
-          whiteSpace="nowrap"
           c={
             playerLoading
               ? 'dimmed'
@@ -104,4 +73,4 @@ const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, pin
   );
 };
 
-export default PlayerComponent;
+export default memo(PlayerComponent);

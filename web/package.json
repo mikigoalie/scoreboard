@@ -12,9 +12,13 @@
   "dependencies": {
     "@mantine/core": "^8.2.4",
     "@mantine/hooks": "^8.2.4",
+    "clsx": "^2.1.1",
+    "luxon": "^3.7.1",
+    "mantine-contextmenu": "^8.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-virtuoso": "^4.14.0"
+    "react-virtuoso": "^4.14.0",
+    "rollup-plugin-visualizer": "^6.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

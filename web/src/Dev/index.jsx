@@ -7,12 +7,12 @@ import { useWindowEvent } from '@mantine/hooks';
 const Dev = () => {
   const [opened, setOpened] = useState(false);
   const handleKeyDown = useCallback(event => {
-    event.preventDefault();
-    
     const target = event.target;
     const isInput = ['INPUT'].includes(target.tagName);
     if (isInput) return;
     if (event.key !== "Tab") return;
+
+        event.preventDefault();
     setOpened(!opened);
     emulateGameEvent({ action: opened ? "scoreboard:hide" : "scoreboard:display" })
   }, [opened]);

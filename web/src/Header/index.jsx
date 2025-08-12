@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo } from 'react';
-import { Box, TextInput, Input, SegmentedControl, Divider} from '@mantine/core';
+import { Box, TextInput, Input, SegmentedControl, Divider } from '@mantine/core';
 import { fetchNui } from '../utils/fetchNui';
 import { SearchIcon } from '../utils/icons';
 
@@ -15,36 +15,32 @@ const Header = ({
   const onFocus = useCallback(focused => fetchNui('scoreboard:focus', focused), []);
   const filterPlaceholder = useMemo(() => tab === 'tab_players' ? locale.ui_tab_filter_players : locale.ui_tab_filter_societies, [tab, locale.ui_tab_filter_players, locale.ui_tab_filter_societies]);
   return (
-    <>
-      <Box p={8}>
-        <SegmentedControl value={tab} onChange={onTabChange} bg="dark.9" data={[
-          { label: locale.ui_tab_players, value: 'tab_players' },
-          { label: locale.ui_tab_societies, value: 'tab_jobs' },
-        ]} fullWidth mb={8}  />
+    <Box p={8}>
+      <SegmentedControl value={tab} onChange={onTabChange} data={[
+        { label: locale.ui_tab_players, value: 'tab_players' },
+        { label: locale.ui_tab_societies, value: 'tab_jobs' },
+      ]} fullWidth mb={8} />
 
-        <TextInput
-          disabled={filterDisabled}
-          value={filter}
-          onChange={(event) => onFilterChange(event.target.value)}
-          placeholder={filterPlaceholder}
-          rightSection={
-            filter !== '' ? (
-              <Input.ClearButton
-                disabled={filterDisabled}
-                onClick={onFilterClear}
-              />
-            ) : (
-              <SearchIcon />
-            )
-          }
-          rightSectionPointerEvents="auto"
-          onFocus={() => onFocus(true)}
-          onBlur={() => onFocus(false)}
-        />
-      </Box>
-      <Divider mb="auto" />
-
-    </>
+      <TextInput
+        disabled={filterDisabled}
+        value={filter}
+        onChange={(event) => onFilterChange(event.target.value)}
+        placeholder={filterPlaceholder}
+        rightSection={
+          filter !== '' ? (
+            <Input.ClearButton
+              disabled={filterDisabled}
+              onClick={onFilterClear}
+            />
+          ) : (
+            <SearchIcon />
+          )
+        }
+        rightSectionPointerEvents="auto"
+        onFocus={() => onFocus(true)}
+        onBlur={() => onFocus(false)}
+      />
+    </Box>
 
   );
 

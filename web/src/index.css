@@ -1,3 +1,4 @@
+
 body {
   background-color: transparent !important;
   user-select: none !important;
@@ -5,23 +6,24 @@ body {
 
 :root {
   color-scheme: only light !important;
+  /*   --mantine-color-body: light-dark(var(--mantine-color-dark-7), var(--mantine-color-dark-9)) !important */
+  font-size: clamp(12px, 1vw, 16px);
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-
-/* Remove scrollbar buttons (arrows) */
 .custom-scrollbar::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
 }
 
-/* Apply to all scrollable elements globally (optional) */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--mantine-color-dark-2) transparent;
@@ -37,14 +39,14 @@ html, body, #root {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--mantine-color-dark-2);
+  background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2)) !important;
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--mantine-color-dark-3);
+  background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-3)) !important;
 }
 
 *::-webkit-scrollbar-button {
@@ -52,3 +54,59 @@ html, body, #root {
   width: 0;
   height: 0;
 }
+
+.mantine-Select-input,
+.mantine-Input-input {
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-9)) !important;
+}
+
+.scoreboard-body {
+  background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-9)) !important;
+  flex: 1;
+  padding: 2px 0 0 2px;
+}
+
+.item-component {
+  padding-right: 1px;
+  text-wrap: nowrap;
+  text-align: center;
+  width: 100%;
+  height: calc(2.5rem * var(--mantine-scale));
+  transition: background-color 0.25s ease-out;
+  gap: 8px;
+
+  &[data-player-local="true"] {
+    background-color: var(--mantine-primary-color-light);
+  }
+
+  &[data-player-loading="true"]:not([data-player-local]) {
+    background-color: var(--mantine-color-dark-9);
+  }
+
+  &:not([data-player-local]):not([data-player-loading="true"]) {
+    background-color: var(--mantine-color-dark-6);
+  }
+
+  .player-name {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.item-component.player:hover {
+  background-color: light-dark(var(--mantine-color-gray-8), var(--mantine-primary-color-light-hover)) !important;
+}
+
+.player-badge {
+  min-height: 100%;
+  min-width: 3.5rem;
+  padding: 2px;
+  margin: 0;
+}
+
+@layer mantine, mantine-contextmenu;

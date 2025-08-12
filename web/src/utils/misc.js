@@ -9,6 +9,10 @@ export const emulateGameEvent = (event, timer) => {
   setTimeout(() => window.dispatchEvent(new MessageEvent('message', { data: { action: event.action, data: event.data } })), timer || 0);
 };
 
+export function getRelativeTime(date, locale = "en") {
+  return new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(date, new Date());
+}
+
 export const mockConfig = {
   maxPlayersCount: 36,
   playerName: "test",
@@ -60,9 +64,9 @@ export const mockPlayers = Array.from({ length: 9874 }, (_, i) => ({
   ping: Math.floor(Math.random() * 200),
   tags: Array.from({ length: Math.floor(Math.random() * 4) }, (_, j) => ({
     label: tagsPool[Math.floor(Math.random() * tagsPool.length)],
-    //color: colorsPool[Math.floor(Math.random() * colorsPool.length)],
+    color: colorsPool[Math.floor(Math.random() * colorsPool.length)],
   })),
-  ...(i === Math.floor(Math.random() * 163) ? { localPlayer: true } : {})
+  ...(i === Math.floor(Math.random() * 5) ? { localPlayer: true } : {})
 }));
 
 export const mockDroppedPlayers = Array.from({ length: 487 }, (_, i) => ({

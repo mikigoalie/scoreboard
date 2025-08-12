@@ -8,6 +8,7 @@ import {
   Drawer,
   Stack,
   Box,
+  Divider
 } from '@mantine/core';
 import { useNuiEvent } from './utils/useNuiEvent';
 import { fetchNui } from './utils/fetchNui';
@@ -16,6 +17,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Playerlist from './Lists/Playerlist';
 import GroupList from './Lists/GroupList';
+import { useContextMenu } from 'mantine-contextmenu';
 
 const DEFAULT_LOCALE = {
   ui_tab_players: 'Players',
@@ -55,15 +57,8 @@ function reducer(state, action) {
   }
 }
 
-const containerStyle = {
-  flex: 1,
-  backgroundColor: 'var(--mantine-color-dark-9)',
-  position: 'relative',
-  height: '100%',
-  padding: '2px 0 0 2px',
-};
-
 const App = () => {
+  const { hideContextMenu, isContextMenuVisible } = useContextMenu()
   const [state, dispatch] = useReducer(reducer, initialState);
   const { players, groups } = state;
   const [tab, setTab] = useState('tab_players');
@@ -82,7 +77,6 @@ const App = () => {
 
   const totalPlayerCount = useMemo(() => players.size, [players]);
 
-  // Filtered players inline helper
   const filteredPlayers = useMemo(() => {
     if (!filter) return players;
     const lowerFilter = filter.toLowerCase();
@@ -94,7 +88,6 @@ const App = () => {
     );
   }, [players, filter]);
 
-  // Filtered groups inline helper
   const filteredGroups = useMemo(() => {
     if (!filter) return groups;
     const lowerFilter = filter.toLowerCase();
@@ -136,24 +129,27 @@ const App = () => {
 
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened);
-  }, [scoreboardOpened]);
+    if (!scoreboardOpened && isContextMenuVisible) {
+      hideContextMenu()
+    }
+  }, [scoreboardOpened, isContextMenuVisible, hideContextMenu]);
 
   useEffect(() => {
     fetchNui('scoreboard:loaded', null, mockConfig).then(config => setConfig(config || DEFAULT_CONFIG));
   }, []);
+  
 
 
   return (
     <Drawer.Root
+      {...drawerProps}
       closeOnClickOutside={false}
       opened={scoreboardOpened}
       onClose={() => setScoreboardOpened(false)}
-      keepMounted={false}
-      size="25%"
-      {...drawerProps}
+      size="clamp(300px, 30vw, 450px)"
     >
       {withOverlay && <Drawer.Overlay {...overlayProps} />}
-      <Drawer.Content miw="400px">
+      <Drawer.Content>
         <Stack style={{ height: '100%', overflow: 'hidden' }} gap={0}>
           <Header
             filter={filter}
@@ -163,8 +159,8 @@ const App = () => {
             onTabChange={setTab}
             locale={locale}
           />
-
-          <Box style={containerStyle}>
+          <Divider mb="auto" />
+          <Box className="scoreboard-body">
             <Box style={{ height: '100%' }}>
               <Box
                 style={{
@@ -185,6 +181,7 @@ const App = () => {
             </Box>
           </Box>
 
+          <Divider mt="auto" />
           <Footer
             playerServerId={playerServerId}
             playerListCount={totalPlayerCount}
