@@ -3,12 +3,6 @@ import { Virtuoso } from 'react-virtuoso';
 import SocietyComponent from '../GroupComponent';
 import EmptyState from './EmptyState';
 
-const virtuosoStyles = {
-  flex: 1,
-  height: '100%',
-  overflow: 'auto',
-};
-
 const GroupList = ({ filter, data }) => {
   const societyArray = useMemo(() => {
     return Array.from(data.entries()).map(([id, item]) => ({
@@ -17,22 +11,29 @@ const GroupList = ({ filter, data }) => {
     }));
   }, [data]);
 
-    if (!data.size) {
-        return <EmptyState />;
-    }
+  if (!data.size) {
+    return <EmptyState />;
+  }
 
   return (
     <Virtuoso
+      style={{ overflow: 'auto' }}
       data={societyArray}
-      style={virtuosoStyles}
+      itemKey={(index, player) => player.serverId}
+      components={{
+        Item: ({ children, ...props }) => (
+          <div {...props}>
+            {children}
+          </div>
+        ),
+      }}
       itemContent={(index, item) => (
-          <SocietyComponent
-            id={item.id}
-            label={item.label}
-            playerCount={item.count}
-          />
+        <SocietyComponent
+          id={item.id}
+          label={item.label}
+          playerCount={item.count}
+        />
       )}
-      aria-label="List of societies"
     />
   );
 };

@@ -104,7 +104,6 @@ AddEventHandler('onResourceStop', function(rs)
     if (rs ~= currentRs) then return end
 end)
 
-
 RegisterNetEvent('scoreboard:sync', function(epoch, data)
     cachedData = data
     if cachedData.players then

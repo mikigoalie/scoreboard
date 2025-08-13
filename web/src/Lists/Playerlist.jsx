@@ -3,8 +3,6 @@ import { Virtuoso } from 'react-virtuoso';
 import PlayerComponent from '../PlayerComponent';
 import EmptyState from './EmptyState';
 
-const virtuosoStyles = { flex: 1, height: '100%', overflow: 'auto' };
-
 const Playerlist = ({ filter, data }) => {
   const deferredFilter = useDeferredValue(filter);
   const playersArray = useMemo(() => [...data.values()], [data]);
@@ -22,18 +20,16 @@ const Playerlist = ({ filter, data }) => {
 
   const renderPlayer = useCallback((index, item) => <PlayerComponent {...item} />, []);
 
-  if (!data.size || filteredPlayers.length === 0) {
-    return <EmptyState />;
-  }
 
   return (
     <Virtuoso
-      style={virtuosoStyles}
+      style={{ overflow: 'auto' }}
       data={filteredPlayers}
       itemKey={(index, player) => player.serverId}
       components={{
+        EmptyPlaceholder: () => <EmptyState filter={filter} />,
         Item: ({ children, ...props }) => (
-          <div {...props} style={{ marginBottom: '2px' }}>
+          <div {...props}>
             {children}
           </div>
         ),

@@ -17,18 +17,18 @@ function Footer({
     return (
         <Box p={16} w="100%" >
             <Box >
-                <Group justify="center">
+                <Group justify="center" >
                     <Tooltip withArrow label={locale.ui_footer_serverid}>
-                        <Badge leftSection={<UserIcon size={14} />} variant="default">{playerServerId}</Badge>
+                        <Badge leftSection={<UserIcon size={14} />} variant="default" c="dimmed">{playerServerId}</Badge>
                     </Tooltip>
                     <Tooltip withArrow label={locale.ui_footer_playercount}>
-                        <Badge leftSection={<UsersIcon size={14} />} variant="default">
+                        <Badge leftSection={<UsersIcon size={14} />} variant="default" c="dimmed">
                             {playerListCount} / {maxPlayersCount}
                         </Badge>
                     </Tooltip>
 
                     <Tooltip withArrow label={locale.ui_footer_playercount}>
-                        <Badge leftSection={<UsersIcon size={14} />} variant="default" onClick={() => Settings.defaultLocale = "en"}>
+                        <Badge leftSection={<UsersIcon size={14} />} variant="default" c="dimmed" onClick={() => Settings.defaultLocale = "en"}>
                             {DateTime.fromSeconds(1754957393).toRelative()}
                         </Badge>
                     </Tooltip>

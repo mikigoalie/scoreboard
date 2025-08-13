@@ -1,4 +1,3 @@
-
 body {
   background-color: transparent !important;
   user-select: none !important;
@@ -7,7 +6,7 @@ body {
 :root {
   color-scheme: only light !important;
   /*   --mantine-color-body: light-dark(var(--mantine-color-dark-7), var(--mantine-color-dark-9)) !important */
-  font-size: clamp(12px, 1vw, 16px);
+/*   font-size: clamp(11px, 1vw, 16px); */
 }
 
 html,
@@ -63,7 +62,7 @@ body,
 .scoreboard-body {
   background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-9)) !important;
   flex: 1;
-  padding: 2px 0 0 2px;
+  padding: 1px
 }
 
 .item-component {
@@ -76,14 +75,23 @@ body,
   gap: 8px;
 
   &[data-player-local="true"] {
+    .player-name-text {
+      color: var(--mantine-primary-color-light-color);
+    }
     background-color: var(--mantine-primary-color-light);
   }
 
   &[data-player-loading="true"]:not([data-player-local]) {
-    background-color: var(--mantine-color-dark-9);
+    .player-name-text {
+      color: var(--mantine-color-dimmed);
+    }
+    background-color: var(--mantine-color-dark-7);
   }
 
   &:not([data-player-local]):not([data-player-loading="true"]) {
+    .player-name-text {
+      color: var(--mantine-color-text);
+    }
     background-color: var(--mantine-color-dark-6);
   }
 
@@ -98,8 +106,10 @@ body,
   }
 }
 
-.item-component.player:hover {
-  background-color: light-dark(var(--mantine-color-gray-8), var(--mantine-primary-color-light-hover)) !important;
+.item-component {
+  &[data-has-actions="true"]:hover {
+    background-color: light-dark(var(--mantine-color-gray-8), var(--mantine-primary-color-light-hover)) !important;
+  }
 }
 
 .player-badge {

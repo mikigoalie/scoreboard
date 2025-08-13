@@ -19,3 +19,4 @@ lib.callback.register('scoreboard:getData', function(source, clientEpoch)
         groups = framework.getGroupList()
     }
 end)
+

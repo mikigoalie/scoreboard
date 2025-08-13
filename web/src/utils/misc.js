@@ -59,7 +59,7 @@ function getRandomName() {
 
 export const mockPlayers = Array.from({ length: 9874 }, (_, i) => ({
   serverId: i + 1,
-  name: i % 2 === 0 ? getRandomName() : null,
+  name: Math.floor(Math.random() * 1000) % 4 === 0 ? null : getRandomName(),
   username: getRandomName(),
   ping: Math.floor(Math.random() * 200),
   tags: Array.from({ length: Math.floor(Math.random() * 4) }, (_, j) => ({

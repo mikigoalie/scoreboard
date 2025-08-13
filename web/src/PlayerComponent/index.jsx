@@ -6,11 +6,11 @@ function getPlayerTags(tags) {
 
   return tags.slice(0, 3).map(({ label, ...badgeProps }, index) => (
     <Badge
-      key={`tag-${label}-${index}`}
       variant={'light'}
       radius={'xs'}
       size="sm"
       {...badgeProps}
+      key={`tag-${label}-${index}`}
     >
       {label}
     </Badge>
@@ -26,6 +26,7 @@ const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, pin
       className="player item-component"
       data-player-local={localPlayer}
       data-player-loading={!name}
+      data-has-actions={false}
     >
       <Badge
         className="player-badge"
@@ -39,15 +40,9 @@ const PlayerComponent = ({ serverId, username, name, tags = [], localPlayer, pin
 
       <Box className="player-name">
         <Text
+          className="player-name-text"
           truncate="end"
           wrap="nowrap"
-          c={
-            playerLoading
-              ? 'dimmed'
-              : localPlayer
-                ? 'var(--mantine-primary-color-light-color)'
-                : undefined
-          }
         >
           {playerLoading ? username : name}
         </Text>

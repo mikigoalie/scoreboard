@@ -137,8 +137,6 @@ const App = () => {
   useEffect(() => {
     fetchNui('scoreboard:loaded', null, mockConfig).then(config => setConfig(config || DEFAULT_CONFIG));
   }, []);
-  
-
 
   return (
     <Drawer.Root
@@ -147,6 +145,7 @@ const App = () => {
       opened={scoreboardOpened}
       onClose={() => setScoreboardOpened(false)}
       size="clamp(300px, 30vw, 450px)"
+      keepMounted={false}
     >
       {withOverlay && <Drawer.Overlay {...overlayProps} />}
       <Drawer.Content>
@@ -161,23 +160,21 @@ const App = () => {
           />
           <Divider mb="auto" />
           <Box className="scoreboard-body">
-            <Box style={{ height: '100%' }}>
-              <Box
-                style={{
-                  display: tab === 'tab_players' ? 'block' : 'none',
-                  height: '100%',
-                }}
-              >
-                <Playerlist filter={filter} data={filteredPlayers} />
-              </Box>
-              <Box
-                style={{
-                  display: tab === 'tab_jobs' ? 'block' : 'none',
-                  height: '100%',
-                }}
-              >
-                <GroupList filter={filter} data={filteredGroups} />
-              </Box>
+            <Box
+              style={{
+                display: tab === 'tab_players' ? 'block' : 'none',
+                height: '100%',
+              }}
+            >
+              <Playerlist filter={filter} data={filteredPlayers} />
+            </Box>
+            <Box
+              style={{
+                display: tab === 'tab_jobs' ? 'block' : 'none',
+                height: '100%',
+              }}
+            >
+              <GroupList filter={filter} data={filteredGroups} />
             </Box>
           </Box>
 
