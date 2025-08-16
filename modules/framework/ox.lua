@@ -12,7 +12,7 @@ end)
 
 AddEventHandler('ox:setGroup', function(playerId, groupName, grade)
     if onlyOnDuty then return end
-    groupController[grade and grade > 0 and "incrementGroup" or "decrementPlayerGroup"](groupName)
+    groupController[grade and grade > 0 and "incrementGroup" or "decrementGroup"](groupName)
 end)
 
 local currentResource = GetCurrentResourceName()
@@ -25,6 +25,7 @@ AddEventHandler('onResourceStart', function(resourceName)
             username = GetPlayerName(playerId)
         }
 
+        local xPlayer = Ox.GetPlayer(playerId)
         if xPlayer then
             xData.name = xPlayer.get('name')
             local groups = xPlayer.getGroups()
@@ -38,6 +39,8 @@ AddEventHandler('onResourceStart', function(resourceName)
             end
 
             xData.group = activeGroup
+        else
+            xData.loading = true
         end
 
         playerController.addPlayer(playerId, xData)
@@ -53,7 +56,8 @@ AddEventHandler('ox:playerLoaded', function(playerId)
 
     playerController.addPlayer(playerId, {
         name = xPlayer.get('name'),
-        username = xPlayer.username
+        username = xPlayer.username,
+        loading = false
     })
 
     epoch.onUpdate()
@@ -67,7 +71,8 @@ end)
 AddEventHandler("playerJoining", function()
     local source = source
     playerController.addPlayer(source, {
-        username = GetPlayerName(source)
+        username = GetPlayerName(source),
+        loading = true
     })
     epoch.onUpdate()
 end)

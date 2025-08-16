@@ -18,7 +18,9 @@ const Header = ({
     <Box p={8}>
       <SegmentedControl value={tab} onChange={onTabChange} data={[
         { label: locale.ui_tab_players, value: 'tab_players' },
-        { label: locale.ui_tab_societies, value: 'tab_jobs' },
+        { label: locale.ui_tab_societies, value: 'ui_tab_societies' },
+        /* { label: locale.ui_tab_players_disconnected, value: 'ui_tab_players_disconnected' }, */
+        
       ]} fullWidth mb={8} />
 
       <TextInput

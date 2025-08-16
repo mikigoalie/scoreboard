@@ -1,16 +1,33 @@
 export const isEnvBrowser = () => !window.invokeNative;
-
-export const noop = () => { };
-
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { DateTime } from "luxon";
 
 export const emulateGameEvent = (event, timer) => {
   if (!isEnvBrowser()) return null;
   setTimeout(() => window.dispatchEvent(new MessageEvent('message', { data: { action: event.action, data: event.data } })), timer || 0);
 };
 
-export function getRelativeTime(date, locale = "en") {
-  return new Intl.RelativeTimeFormat(locale, { numeric: "auto" }).format(date, new Date());
+export function getRelativeTime(input) {
+  if (!input) return "";
+
+  // Convert input to Luxon DateTime
+  let dateTime;
+  if (typeof input === "number") {
+    // If it's in seconds, convert to ms
+    dateTime =
+      input < 1e12
+        ? DateTime.fromSeconds(input)
+        : DateTime.fromMillis(input);
+  } else if (input instanceof Date) {
+    dateTime = DateTime.fromJSDate(input);
+  } else if (typeof input === "string") {
+    dateTime = DateTime.fromISO(input);
+  } else {
+    return "";
+  }
+
+  // Return human-readable relative time
+  return dateTime.toRelative({ base: DateTime.now() }) || "";
 }
 
 export const mockConfig = {
@@ -50,12 +67,11 @@ const namePool = [
   "Levi Bell", "Violet Morrison", "Christian Johnston", "Claire Bishop", "Grayson Lane",
   "Penelope Pierce", "Sebastian Armstrong", "Aurora Boyd", "Miles Steele", "Naomi West"
 ];
+
 const tagsPool = ["admin", "vip", "moderator", "friend"]
 const colorsPool = ["red", "green", "#00baff", "yellow", "orange", "blue"];
-function getRandomName() {
-  const index = Math.floor(Math.random() * namePool.length);
-  return namePool[index];
-}
+
+const getRandomName = () => namePool[Math.floor(Math.random() * namePool.length)]
 
 export const mockPlayers = Array.from({ length: 9874 }, (_, i) => ({
   serverId: i + 1,
@@ -66,7 +82,7 @@ export const mockPlayers = Array.from({ length: 9874 }, (_, i) => ({
     label: tagsPool[Math.floor(Math.random() * tagsPool.length)],
     color: colorsPool[Math.floor(Math.random() * colorsPool.length)],
   })),
-  ...(i === Math.floor(Math.random() * 5) ? { localPlayer: true } : {})
+  ...(i === Math.floor(Math.random() * 10) ? { localPlayer: true } : {})
 }));
 
 export const mockDroppedPlayers = Array.from({ length: 487 }, (_, i) => ({
@@ -82,6 +98,7 @@ export const mockDroppedPlayers = Array.from({ length: 487 }, (_, i) => ({
 const societyPool = [
   "Los Santos Police Department", "LEO Services", "Staff"
 ];
+
 export const mockGroups = Array.from({ length: societyPool.length }, (_, i) => ({
   label: societyPool[i],
   playerCount: i > 0 ? 0 : 5,

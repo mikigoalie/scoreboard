@@ -3,22 +3,19 @@ import { Virtuoso } from 'react-virtuoso';
 import PlayerComponent from '../PlayerComponent';
 import EmptyState from './EmptyState';
 
-const Playerlist = ({ filter, data }) => {
+const DroppedPlayerList = ({ filter, data }) => {
   const playersArray = useMemo(() => [...data.values()], [data]);
 
   const filteredPlayers = useMemo(() => {
     if (!data.size) return playersArray;
-
     const lowerFilter = filter.toLowerCase();
     return playersArray.filter(player => {
       const name = player.name?.toLowerCase() || '';
-      const username = player.username?.toLowerCase() || '';
       const serverId = player.serverId?.toString() || '';
       const hasMatchingTag = player.tags?.some(tag =>
         tag.label?.toLowerCase().includes(lowerFilter)
       ) || false;
       return (
-        username.includes(lowerFilter) ||
         name.includes(lowerFilter) ||
         serverId.includes(lowerFilter) ||
         hasMatchingTag
@@ -26,7 +23,7 @@ const Playerlist = ({ filter, data }) => {
     });
   }, [playersArray, filter, data.size]);
 
-  const renderPlayer = useCallback((index, item) => <PlayerComponent {...item} />, []);
+  const renderPlayer = useCallback((index, item) => <PlayerComponent {...item} droppedAt={Math.floor(Date.now() / 1000) - 300}/>, []);
 
   return (
     <Virtuoso
@@ -46,4 +43,4 @@ const Playerlist = ({ filter, data }) => {
   );
 };
 
-export default memo(Playerlist);
+export default memo(DroppedPlayerList);

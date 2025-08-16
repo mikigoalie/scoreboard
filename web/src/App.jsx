@@ -17,6 +17,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Playerlist from './Lists/Playerlist';
 import GroupList from './Lists/GroupList';
+import DroppedPlayerList from './Lists/DroppedPlayerList';
 import { useContextMenu } from 'mantine-contextmenu';
 
 const DEFAULT_LOCALE = {
@@ -76,28 +77,6 @@ const App = () => {
   } = config;
 
   const totalPlayerCount = useMemo(() => players.size, [players]);
-
-  const filteredPlayers = useMemo(() => {
-    if (!filter) return players;
-    const lowerFilter = filter.toLowerCase();
-    return new Map(
-      [...players].filter(([, player]) =>
-        player.name?.toLowerCase().includes(lowerFilter) ||
-        String(player.serverId)?.includes(lowerFilter)
-      )
-    );
-  }, [players, filter]);
-
-  const filteredGroups = useMemo(() => {
-    if (!filter) return groups;
-    const lowerFilter = filter.toLowerCase();
-    return new Map(
-      [...groups].filter(([, group]) =>
-        group.name?.toLowerCase().includes(lowerFilter) ||
-        group.initials?.toLowerCase().includes(lowerFilter)
-      )
-    );
-  }, [groups, filter]);
 
   useNuiEvent('scoreboard:display', (data) => {
     if (!data) {
@@ -166,15 +145,23 @@ const App = () => {
                 height: '100%',
               }}
             >
-              <Playerlist filter={filter} data={filteredPlayers} />
+              <Playerlist filter={filter} data={players} />
             </Box>
             <Box
               style={{
-                display: tab === 'tab_jobs' ? 'block' : 'none',
+                display: tab === 'ui_tab_players_disconnected' ? 'block' : 'none',
                 height: '100%',
               }}
             >
-              <GroupList filter={filter} data={filteredGroups} />
+              <DroppedPlayerList filter={filter} data={players} />
+            </Box>
+            <Box
+              style={{
+                display: tab === 'ui_tab_societies' ? 'block' : 'none',
+                height: '100%',
+              }}
+            >
+              <GroupList filter={filter} data={groups} />
             </Box>
           </Box>
 

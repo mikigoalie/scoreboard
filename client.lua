@@ -1,7 +1,6 @@
 lib.locale()
 local cachedData = {}
 local activated = false
-local focused = false
 local lastEpoch = 0
 
 
@@ -28,6 +27,11 @@ local keybind = lib.addKeybind({
     defaultKey = 'TAB',
     onPressed = function(self)
         if activated then return SendNUIMessage({ action = "scoreboard:hide" }) end
+
+        if IsNuiFocused() then
+            return
+        end
+
         local requireSync, epoch, data = lib.callback.await('scoreboard:getData', 500, lastEpoch)
 
 
@@ -40,6 +44,7 @@ local keybind = lib.addKeybind({
             data.players?[tostring(cache.serverId)].localPlayer = true
         end
 
+        print(json.encode(data))
         cachedData = data
         SendNUIMessage({ action = "scoreboard:display", data = cachedData })
     end
@@ -109,6 +114,7 @@ RegisterNetEvent('scoreboard:sync', function(epoch, data)
     if cachedData.players then
         cachedData.players?[tostring(cache.serverId)].localPlayer = true
     end
+
     lastEpoch = epoch
     SendNUIMessage({ action = "scoreboard:update", data = cachedData })
 end)

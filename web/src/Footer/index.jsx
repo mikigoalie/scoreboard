@@ -1,9 +1,6 @@
 import { memo } from 'react';
 import { Box, Badge, Group, Tooltip, Center } from '@mantine/core';
 import { UserIcon, UsersIcon, SettingsIcon } from '../utils/icons';
-import { getRelativeTime } from '../utils/misc';
-import { DateTime, Settings } from "luxon";
-Settings.defaultLocale = "en"
 
 function Footer({
     playerServerId = 0,
@@ -24,12 +21,6 @@ function Footer({
                     <Tooltip withArrow label={locale.ui_footer_playercount}>
                         <Badge leftSection={<UsersIcon size={14} />} variant="default" c="dimmed">
                             {playerListCount} / {maxPlayersCount}
-                        </Badge>
-                    </Tooltip>
-
-                    <Tooltip withArrow label={locale.ui_footer_playercount}>
-                        <Badge leftSection={<UsersIcon size={14} />} variant="default" c="dimmed" onClick={() => Settings.defaultLocale = "en"}>
-                            {DateTime.fromSeconds(1754957393).toRelative()}
                         </Badge>
                     </Tooltip>
                     <Badge variant="default" p={4} c="dimmed" component="button" onClick={() => console.log('HEY')}>

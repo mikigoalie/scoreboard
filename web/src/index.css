@@ -6,7 +6,7 @@ body {
 :root {
   color-scheme: only light !important;
   /*   --mantine-color-body: light-dark(var(--mantine-color-dark-7), var(--mantine-color-dark-9)) !important */
-/*   font-size: clamp(11px, 1vw, 16px); */
+  /*   font-size: clamp(11px, 1vw, 16px); */
 }
 
 html,
@@ -62,7 +62,7 @@ body,
 .scoreboard-body {
   background-color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-9)) !important;
   flex: 1;
-  padding: 1px
+  padding: 1px;
 }
 
 .item-component {
@@ -108,6 +108,10 @@ body,
 
 .item-component {
   &[data-has-actions="true"]:hover {
+    .player-name-text {
+      font-weight: 600;
+    }
+
     background-color: light-dark(var(--mantine-color-gray-8), var(--mantine-primary-color-light-hover)) !important;
   }
 }
