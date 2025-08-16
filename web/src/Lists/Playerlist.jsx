@@ -14,14 +14,11 @@ const Playerlist = ({ filter, data }) => {
       const name = player.name?.toLowerCase() || '';
       const username = player.username?.toLowerCase() || '';
       const serverId = player.serverId?.toString() || '';
-      const hasMatchingTag = player.tags?.some(tag =>
-        tag.label?.toLowerCase().includes(lowerFilter)
-      ) || false;
       return (
+        serverId.includes(lowerFilter) ||
         username.includes(lowerFilter) ||
         name.includes(lowerFilter) ||
-        serverId.includes(lowerFilter) ||
-        hasMatchingTag
+        player.tags?.some(tag => tag.label?.toLowerCase().includes(lowerFilter)) || false
       );
     });
   }, [playersArray, filter, data.size]);
