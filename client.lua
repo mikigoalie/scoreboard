@@ -101,6 +101,19 @@ end)
 
 AddStateBagChangeHandler("scoreboard", ('player:%s'):format(cache.serverId), function(bagName, key, value)
     activated = value
+
+    if activated then
+        if IsScreenblurFadeRunning() then
+            DisableScreenblurFade()
+        end
+        TriggerScreenblurFadeIn(100)
+    else
+    if IsScreenblurFadeRunning() then
+        DisableScreenblurFade()
+    end
+
+    TriggerScreenblurFadeOut(250)
+    end
 end)
 
 
@@ -118,6 +131,7 @@ RegisterNetEvent('scoreboard:sync', function(epoch, data)
     lastEpoch = epoch
     SendNUIMessage({ action = "scoreboard:update", data = cachedData })
 end)
+
 RegisterCommand('test', function()
     SendNUIMessage({
         action = "scoreboard:updatecfg",

@@ -25,7 +25,7 @@ const PlayerComponent = ({
   name,
   tags = [],
   localPlayer,
-  droppedAt, // only this now
+  droppedAt,
   loading,
 }) => {
   const playerTags = useMemo(() => getPlayerTags(tags), [tags]);

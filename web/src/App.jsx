@@ -1,14 +1,10 @@
-import React, {
-  useState,
-  useReducer,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useState, useReducer, useEffect, useMemo } from 'react';
 import {
   Drawer,
   Stack,
-  Box,
-  Divider
+  Divider,
+  Paper,
+  Tabs,
 } from '@mantine/core';
 import { useNuiEvent } from './utils/useNuiEvent';
 import { fetchNui } from './utils/fetchNui';
@@ -59,7 +55,7 @@ function reducer(state, action) {
 }
 
 const App = () => {
-  const { hideContextMenu, isContextMenuVisible } = useContextMenu()
+  const { hideContextMenu, isContextMenuVisible } = useContextMenu();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { players, groups } = state;
   const [tab, setTab] = useState('tab_players');
@@ -78,6 +74,7 @@ const App = () => {
 
   const totalPlayerCount = useMemo(() => players.size, [players]);
 
+  // Nui events
   useNuiEvent('scoreboard:display', (data) => {
     if (!data) {
       setScoreboardOpened(true);
@@ -90,16 +87,19 @@ const App = () => {
 
   useNuiEvent('scoreboard:hide', () => setScoreboardOpened(false));
 
-  useNuiEvent('scoreboard:update', ({ forceClear = false, players = {}, groups = {}, droppedPlayers = {} }) => {
-    if (forceClear) {
-      dispatch({ type: 'clear' });
-      return;
+  useNuiEvent(
+    'scoreboard:update',
+    ({ forceClear = false, players = {}, groups = {}, droppedPlayers = {} }) => {
+      if (forceClear) {
+        dispatch({ type: 'clear' });
+        return;
+      }
+      dispatch({ type: 'update', players, groups, droppedPlayers });
     }
-    dispatch({ type: 'update', players, groups, droppedPlayers });
-  });
+  );
 
   useNuiEvent('scoreboard:updatecfg', (data) => {
-    setConfig(prev => ({
+    setConfig((prev) => ({
       ...prev,
       ...data,
       locale: { ...prev.locale, ...data.locale },
@@ -109,12 +109,14 @@ const App = () => {
   useEffect(() => {
     fetchNui('scoreboard:toggled', scoreboardOpened);
     if (!scoreboardOpened && isContextMenuVisible) {
-      hideContextMenu()
+      hideContextMenu();
     }
   }, [scoreboardOpened, isContextMenuVisible, hideContextMenu]);
 
   useEffect(() => {
-    fetchNui('scoreboard:loaded', null, mockConfig).then(config => setConfig(config || DEFAULT_CONFIG));
+    fetchNui('scoreboard:loaded', null, mockConfig).then((config) =>
+      setConfig(config || DEFAULT_CONFIG)
+    );
   }, []);
 
   return (
@@ -125,54 +127,70 @@ const App = () => {
       onClose={() => setScoreboardOpened(false)}
       size="clamp(300px, 30vw, 450px)"
       keepMounted={false}
+      
     >
       {withOverlay && <Drawer.Overlay {...overlayProps} />}
-      <Drawer.Content>
-        <Stack style={{ height: '100%', overflow: 'hidden' }} gap={0}>
-          <Header
-            filter={filter}
-            onFilterChange={setFilter}
-            onFilterClear={() => setFilter('')}
-            tab={tab}
-            onTabChange={setTab}
-            locale={locale}
-          />
-          <Divider mb="auto" />
-          <Box className="scoreboard-body">
-            <Box
-              style={{
-                display: tab === 'tab_players' ? 'block' : 'none',
-                height: '100%',
-              }}
-            >
-              <Playerlist filter={filter} data={players} />
-            </Box>
-            <Box
-              style={{
-                display: tab === 'ui_tab_players_disconnected' ? 'block' : 'none',
-                height: '100%',
-              }}
-            >
-              <DroppedPlayerList filter={filter} data={players} />
-            </Box>
-            <Box
-              style={{
-                display: tab === 'ui_tab_societies' ? 'block' : 'none',
-                height: '100%',
-              }}
-            >
-              <GroupList filter={filter} data={groups} />
-            </Box>
-          </Box>
+      <Drawer.Content radius={drawerProps?.radius ?? 0}>
+        <Paper
+        radius={drawerProps?.radius ?? 0}
+          withBorder
+          style={{
+            height: '100%',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <Stack gap={0} style={{ flex: 1 }}>
+            <Header
+              filter={filter}
+              onFilterChange={setFilter}
+              onFilterClear={() => setFilter('')}
+              tab={tab}
+              onTabChange={setTab}
+              locale={locale}
+            />
 
-          <Divider mt="auto" />
-          <Footer
-            playerServerId={playerServerId}
-            playerListCount={totalPlayerCount}
-            maxPlayersCount={maxPlayersCount}
-            locale={locale}
-          />
-        </Stack>
+            <Divider mb="auto" />
+
+            <Tabs
+              value={tab}
+              onChange={setTab}
+              keepMounted={true}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+            >
+              <Tabs.Panel
+                value="tab_players"
+                style={{ flex: 1, overflow: 'auto' }}
+              >
+                <Playerlist filter={filter} data={players} />
+              </Tabs.Panel>
+
+              <Tabs.Panel
+                value="ui_tab_players_disconnected"
+                style={{ flex: 1, overflow: 'auto' }}
+              >
+                <DroppedPlayerList filter={filter} data={players} />
+              </Tabs.Panel>
+
+              <Tabs.Panel
+                value="ui_tab_societies"
+                style={{ flex: 1, overflow: 'auto' }}
+              >
+                <GroupList filter={filter} data={groups} />
+              </Tabs.Panel>
+            </Tabs>
+
+            <Divider mt="auto" />
+
+            <Footer
+              playerServerId={playerServerId}
+              playerListCount={totalPlayerCount}
+              maxPlayersCount={maxPlayersCount}
+              locale={locale}
+            />
+          </Stack>
+        </Paper>
       </Drawer.Content>
     </Drawer.Root>
   );
